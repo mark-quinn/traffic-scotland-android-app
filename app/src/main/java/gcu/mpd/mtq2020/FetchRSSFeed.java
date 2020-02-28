@@ -35,6 +35,7 @@ public class FetchRSSFeed extends AsyncTask<Void, Void, Boolean> {
         try {
             InputStream inputStream = url.openConnection().getInputStream();
             // TODO pass to traffic event parser
+            new TrafficEventParser(inputStream).parseFeed();
             return true;
         } catch (IOException e) {
             e.printStackTrace();

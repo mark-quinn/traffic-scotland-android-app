@@ -18,7 +18,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView rawDataDisplay;
     private String result;
     private Button startButton;
-    private String urlSource = "https://trafficscotland.org/rss/feeds/currentincidents.aspx";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +35,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void startProgress() {
         // Run network access on a separate thread;
-        new FetchRSSFeed(urlSource).execute((Void) null);
     }
 
     // Need separate thread to access the internet resource over network

@@ -7,8 +7,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 public class FetchRSSFeed extends AsyncTask<Void, Void, Boolean> {
+    public List<Event> events;
     private URL url;
 
     public FetchRSSFeed(String feedURL) {
@@ -34,8 +36,7 @@ public class FetchRSSFeed extends AsyncTask<Void, Void, Boolean> {
     protected Boolean doInBackground(Void... voids) {
         try {
             InputStream inputStream = url.openConnection().getInputStream();
-            // TODO pass to traffic event parser
-            new TrafficEventParser(inputStream).parseFeed();
+            events = new TrafficEventParser(inputStream).parseFeed();
             return true;
         } catch (IOException e) {
             Log.e("IO", "Error connecting to URL");

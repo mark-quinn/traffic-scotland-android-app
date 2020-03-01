@@ -8,6 +8,8 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TrafficEventParser {
     private InputStream feed;
@@ -16,12 +18,13 @@ public class TrafficEventParser {
     private String geoLocation = null;
     private String publishedDate = null;
     private boolean isItem = false;
+    List<Event> events = new ArrayList<>();
 
     public TrafficEventParser(InputStream feed) {
         this.feed = feed;
     }
 
-    public void parseFeed() throws IOException {
+    public List<Event> parseFeed() throws IOException {
         try {
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             factory.setNamespaceAware(true);
@@ -51,7 +54,6 @@ public class TrafficEventParser {
                     }
                 }
 
-                Log.d("PARSER", "Parsing: " + name);
                 String result = "";
                 if(xpp.next() == XmlPullParser.TEXT) {
                     result = xpp.getText();
@@ -71,8 +73,7 @@ public class TrafficEventParser {
 
                 if(validItem()) {
                     Event event = new Event(title, description, geoLocation, publishedDate);
-                    System.out.println(event);
-                    // TODO add event obj to collection
+                    events.add(event);
                 }
             }
         }
@@ -83,6 +84,7 @@ public class TrafficEventParser {
             feed.close();
             Log.d("STREAM", "Input stream closed");
         }
+        return events;
     }
 
     private boolean validItem() {

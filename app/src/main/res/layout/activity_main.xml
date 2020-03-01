@@ -7,42 +7,6 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/salutation"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="32dp"
-        android:text="Welcome to Mobile Platform Development"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/acknowledgement"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/startButton"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="33dp"
-        android:layout_marginEnd="8dp"
-        android:text="Press to get data"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/acknowledgement" />
-
-    <TextView
-        android:id="@+id/acknowledgement"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Traffic Scotland Road Data"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/salutation" />
-
-    <TextView
         android:id="@+id/rawDataDisplay"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -52,7 +16,8 @@
         android:text="Raw Data is Displayed here"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/startButton" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -70,9 +70,9 @@ public class TrafficEventParser {
                 }
 
                 if(validItem()) {
-                    // TODO create new event obj
+                    Event event = new Event(title, description, geoLocation, publishedDate);
+                    System.out.println(event);
                     // TODO add event obj to collection
-                    System.out.println(title + "\n" + description + "\n" + geoLocation + "\n" + publishedDate);
                 }
             }
         }

@@ -38,7 +38,7 @@ public class FetchRSSFeed extends AsyncTask<Void, Void, Boolean> {
             new TrafficEventParser(inputStream).parseFeed();
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("IO", "Error connecting to URL");
         }
         return false;
     }

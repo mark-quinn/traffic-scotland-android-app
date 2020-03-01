@@ -11,37 +11,92 @@ import java.io.InputStream;
 
 public class TrafficEventParser {
     private InputStream feed;
+    private String title = null;
+    private String description = null;
+    private String geoLocation = null;
+    private String publishedDate = null;
+    private boolean isItem = false;
 
     public TrafficEventParser(InputStream feed) {
         this.feed = feed;
     }
 
-    public void parseFeed() {
+    public void parseFeed() throws IOException {
         try {
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             factory.setNamespaceAware(true);
             XmlPullParser xpp = factory.newPullParser();
             xpp.setInput(feed, null); // inputEncoding automatically gets set
-            int eventType = xpp.getEventType();
 
-            while (eventType != XmlPullParser.END_DOCUMENT) {
-                if(eventType == XmlPullParser.START_DOCUMENT)
-                    System.out.println("Start document");
-                else if(eventType == XmlPullParser.START_TAG) {
-                    String temp = xpp.getName();
-                    System.out.println("Start tag " + temp);
+            xpp.nextTag(); // skip first tag
+            while (xpp.next() != XmlPullParser.END_DOCUMENT) {
+                int eventType = xpp.getEventType();
+
+                String name = xpp.getName();
+                if(name == null)
+                    continue;
+
+                if(eventType == XmlPullParser.END_TAG) {
+                    if(name.equalsIgnoreCase("item")) {
+                        isItem = false;
+                    }
+                    continue;
                 }
-                else if(eventType == XmlPullParser.END_TAG) {
-                    String temp = xpp.getName();
-                    System.out.println("End tag " + temp);
+
+                if(eventType == XmlPullParser.START_TAG) {
+                    if(name.equalsIgnoreCase("item")) {
+                        isItem = true;
+                        resetItemFields();
+                        continue;
+                    }
                 }
-                eventType = xpp.next();
+
+                Log.d("PARSER", "Parsing: " + name);
+                String result = "";
+                if(xpp.next() == XmlPullParser.TEXT) {
+                    result = xpp.getText();
+                    xpp.nextTag();
+                }
+                xpp.next();
+
+                if (name.equalsIgnoreCase("title")) {
+                    title = result;
+                } else if (name.equalsIgnoreCase("description")) {
+                    description = result;
+                } else if (name.equalsIgnoreCase("point")) {
+                    geoLocation = result;
+                } else if (name.equalsIgnoreCase("pubdate")) {
+                    publishedDate = result;
+                }
+
+                if(validItem()) {
+                    // TODO create new event obj
+                    // TODO add event obj to collection
+                    System.out.println(title + "\n" + description + "\n" + geoLocation + "\n" + publishedDate);
+                }
             }
-        } catch (XmlPullParserException e) {
-            Log.e("Parser", "Cannot parse event", e);
-        } catch (IOException e) {
-            Log.e("IO", "IO error during parsing", e);
         }
-        System.out.println("End document");
+        catch (XmlPullParserException e) {
+            Log.e("Parser", "Cannot parse event", e);
+        }
+        finally {
+            feed.close();
+            Log.d("STREAM", "Input stream closed");
+        }
+    }
+
+    private boolean validItem() {
+        if(title != null && description != null && geoLocation != null && publishedDate != null
+                 && isItem) {
+            return true;
+        }
+        return false;
+    }
+
+    private void resetItemFields() {
+        title = null;
+        description = null;
+        geoLocation = null;
+        publishedDate = null;
     }
 }

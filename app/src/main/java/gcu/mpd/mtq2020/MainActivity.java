@@ -37,8 +37,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void startProgress() {
         // Run network access on a separate thread;
-        new Thread(new Task(urlSource)).start();
-    } //
+        new FetchRSSFeed(urlSource).execute((Void) null);
+    }
 
     // Need separate thread to access the internet resource over network
     // Other neater solutions should be adopted in later iterations.

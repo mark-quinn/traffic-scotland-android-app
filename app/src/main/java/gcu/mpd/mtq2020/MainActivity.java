@@ -1,5 +1,6 @@
 package gcu.mpd.mtq2020;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void updateEvents(String event) {
+        // TODO refactor better way of handling choice
         if(event.equalsIgnoreCase("Current Incidents")) {
             new TrafficInformation(this).getCurrentIncidents();
             return;

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">traffic_scotland</string>
+    <string-array name="event_choices">
+        <item>Current Incidents</item>
+        <item>Ongoing Roadworks</item>
+        <item>Planned Roadworks</item>
+    </string-array>
 </resources>

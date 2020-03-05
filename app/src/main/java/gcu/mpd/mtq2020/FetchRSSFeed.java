@@ -1,7 +1,9 @@
 package gcu.mpd.mtq2020;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,11 +12,13 @@ import java.net.URL;
 import java.util.List;
 
 public class FetchRSSFeed extends AsyncTask<Void, Void, Boolean> {
+    private final Activity mActivity;
     public List<Event> events;
     private URL url;
 
-    public FetchRSSFeed(String feedURL) {
+    public FetchRSSFeed(String feedURL, Activity activity) {
         setURL(feedURL);
+        mActivity = activity;
     }
 
     private void setURL(String feedURL) {
@@ -50,6 +54,8 @@ public class FetchRSSFeed extends AsyncTask<Void, Void, Boolean> {
 
         if (success) {
             // TODO update view
+            TextView result = mActivity.findViewById(R.id.rawDataDisplay);
+            result.setText(Integer.toString(events.size()));
         }
     }
 }

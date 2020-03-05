@@ -21,17 +21,33 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
-        new TrafficInformation(this).getCurrentRoadworks();
+        new TrafficInformation(this).getCurrentIncidents();
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String text = parent.getItemAtPosition(position).toString();
-        System.out.println(text);
+        // TODO guard clause if choice is already current val
+        updateEvents(text);
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    private void updateEvents(String event) {
+        if(event.equalsIgnoreCase("Current Incidents")) {
+            new TrafficInformation(this).getCurrentIncidents();
+            return;
+        }
+        if(event.equalsIgnoreCase("Ongoing Roadworks")) {
+            new TrafficInformation(this).getCurrentRoadworks();
+            return;
+        }
+        if(event.equalsIgnoreCase("Planned Roadworks")) {
+            new TrafficInformation(this).getPlannedRoadworks();
+            return;
+        }
     }
 }

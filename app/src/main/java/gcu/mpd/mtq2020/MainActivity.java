@@ -5,12 +5,20 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    public TextView rawDataDisplay;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, OnMapReadyCallback {
+    private LatLngBounds SCOTLAND = new LatLngBounds(
+            new LatLng(54.0050, 3.0626), new LatLng(57.4778, 4.2247)
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +30,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
         new TrafficInformation(this).getCurrentIncidents();
+        MapFragment mapFragment = (MapFragment) getFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
     }
 
     @Override
@@ -50,5 +61,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             new TrafficInformation(this).getPlannedRoadworks();
             return;
         }
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(SCOTLAND.getCenter(), 5));
     }
 }

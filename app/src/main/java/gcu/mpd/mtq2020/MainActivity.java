@@ -15,10 +15,17 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, OnMapReadyCallback {
     private LatLngBounds SCOTLAND = new LatLngBounds(
             new LatLng(54.0050, 3.0626), new LatLng(57.4778, 4.2247)
     );
+
+    private MapFragment mapFragment;
+    private ArrayList<LatLng> latlngs = new ArrayList<>();
+    private GoogleMap mMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
         new TrafficInformation(this).getCurrentIncidents();
-        MapFragment mapFragment = (MapFragment) getFragmentManager()
+        mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
@@ -66,5 +73,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onMapReady(GoogleMap googleMap) {
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(SCOTLAND.getCenter(), 5));
+    }
+
+    public void updateMap(List<Event> events) {
+        setLatLng(events);
+        mapFragment.getMapAsync(this);
+    }
+
+    private void setLatLng(List<Event> events) {
+        for (Event event: events) {
+            System.out.println(event.latitude);
+            latlngs.add(new LatLng(event.latitude, event.longitude));
+        }
     }
 }

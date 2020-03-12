@@ -1,15 +1,13 @@
 package gcu.mpd.mtq2020;
 
-import android.app.Activity;
-
 public class TrafficInformation {
-    private final Activity activity;
+    private MainActivity activity;
     private String baseString = "https://trafficscotland.org/rss/feeds";
     private String currentIncidentsURL  = baseString + "/currentincidents.aspx";
     private String currentRoadworksURL = baseString + "/roadworks.aspx";
     private String plannedRoadworksURL = baseString + "/plannedroadworks.aspx";
 
-    public TrafficInformation(Activity activity) {
+    public TrafficInformation(MainActivity activity) {
         this.activity = activity;
     }
 

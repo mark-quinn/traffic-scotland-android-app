@@ -40,7 +40,8 @@ public class FetchRSSFeed extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String rawFeed) {
         super.onPostExecute(rawFeed);
-
+        TrafficEventParser trafficEventParser = new TrafficEventParser();
+        trafficEventParser.parse(rawFeed);
     }
 
     private String downloadXML() {

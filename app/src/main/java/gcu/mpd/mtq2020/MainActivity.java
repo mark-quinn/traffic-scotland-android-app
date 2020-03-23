@@ -8,17 +8,9 @@ import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
+public class MainActivity extends AppCompatActivity
+        implements AdapterView.OnItemSelectedListener, TrafficURL {
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,15 +20,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
-
-        FetchRSSFeed fetchRSSFeed = new FetchRSSFeed("https://trafficscotland.org/rss/feeds/currentincidents.aspx");
-        fetchRSSFeed.execute();
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String text = parent.getItemAtPosition(position).toString();
-        // TODO guard clause if choice is already current val
+        FetchRSSFeed fetchRSSFeed = null;
+
+        if (text.equalsIgnoreCase("current incidents")) {
+            fetchRSSFeed = new FetchRSSFeed(TrafficURL.currentIncidents);
+        }
+        if (text.equalsIgnoreCase("ongoing roadworks")) {
+            fetchRSSFeed = new FetchRSSFeed(TrafficURL.ongoingRoadworks);
+        }
+        if (text.equalsIgnoreCase("planned roadworks")) {
+            fetchRSSFeed = new FetchRSSFeed(TrafficURL.plannedRoadworks);
+        }
+        fetchRSSFeed.execute();
     }
 
     @Override

@@ -1,5 +1,7 @@
 package gcu.mpd.mtq2020;
 
+import java.util.Locale;
+
 public class Event {
     public String title;
     public String description;
@@ -29,6 +31,10 @@ public class Event {
 
     public void setPublishedDate(String publishedDate) {
         this.publishedDate = publishedDate;
+    }
+
+    public String getLocation() {
+        return String.format(Locale.ENGLISH, "%f,%f", latitude, longitude);
     }
 
     public void setLocation(String geoLocation) {

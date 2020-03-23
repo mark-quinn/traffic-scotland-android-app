@@ -3,102 +3,72 @@ package gcu.mpd.mtq2020;
 import android.util.Log;
 
 import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
-
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.List;
 
 public class TrafficEventParser {
-    private InputStream feed;
-    private String title = null;
-    private String description = null;
-    private String geoLocation = null;
-    private String publishedDate = null;
-    private boolean isItem = false;
-    List<Event> events = new ArrayList<>();
+    private static final String TAG = "TrafficEventParser";
+    private ArrayList<Event> events;
 
-    public TrafficEventParser(InputStream feed) {
-        this.feed = feed;
+    public TrafficEventParser() {
+        this.events = new ArrayList<>();
     }
 
-    public List<Event> parseFeed() throws IOException {
+    public ArrayList<Event> getEvents() {
+        return events;
+    }
+
+    public boolean parse(String xmlData) {
+        boolean status = true;
+        Event currentRecord = null;
+        boolean inEntry = false;
+        String textValue = "";
+
         try {
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             factory.setNamespaceAware(true);
             XmlPullParser xpp = factory.newPullParser();
-            xpp.setInput(feed, null); // inputEncoding automatically gets set
+            xpp.setInput(new StringReader(xmlData));
+            int eventType = xpp.getEventType();
 
-            xpp.nextTag(); // skip first tag
-            while (xpp.next() != XmlPullParser.END_DOCUMENT) {
-                int eventType = xpp.getEventType();
-
-                String name = xpp.getName();
-                if(name == null)
-                    continue;
-
-                if(eventType == XmlPullParser.END_TAG) {
-                    if(name.equalsIgnoreCase("item")) {
-                        isItem = false;
-                    }
-                    continue;
+            while(eventType != XmlPullParser.END_DOCUMENT) {
+                String tagName = xpp.getName();
+                switch (eventType) {
+                    case XmlPullParser.START_TAG:
+                        if("item".equalsIgnoreCase(tagName)) {
+                            inEntry = true;
+                            currentRecord = new Event();
+                        }
+                        break;
+                    case XmlPullParser.TEXT:
+                        textValue = xpp.getText();
+                        break;
+                    case XmlPullParser.END_TAG:
+                        if(inEntry) {
+                            if("item".equalsIgnoreCase(tagName)) {
+                                events.add(currentRecord);
+                                inEntry = false;
+                            } else if("title".equalsIgnoreCase(tagName)) {
+                                currentRecord.setTitle(textValue);
+                            } else if("description".equalsIgnoreCase(tagName)) {
+                                currentRecord.setDescription(textValue);
+                            } else if("point".equalsIgnoreCase(tagName)) {
+                                currentRecord.setLocation(textValue);
+                            } else if("pubDate".equalsIgnoreCase(tagName)) {
+                                currentRecord.setPublishedDate(textValue);
+                            }
+                        }
+                        break;
                 }
-
-                if(eventType == XmlPullParser.START_TAG) {
-                    if(name.equalsIgnoreCase("item")) {
-                        isItem = true;
-                        resetItemFields();
-                        continue;
-                    }
-                }
-
-                String result = "";
-                if(xpp.next() == XmlPullParser.TEXT) {
-                    result = xpp.getText();
-                    xpp.nextTag();
-                }
-                xpp.next();
-
-                if (name.equalsIgnoreCase("title")) {
-                    title = result;
-                } else if (name.equalsIgnoreCase("description")) {
-                    description = result;
-                } else if (name.equalsIgnoreCase("point")) {
-                    geoLocation = result;
-                } else if (name.equalsIgnoreCase("pubdate")) {
-                    publishedDate = result;
-                }
-
-                if(validItem()) {
-                    Event event = new Event(title, description, geoLocation, publishedDate);
-                    events.add(event);
-                }
+                eventType = xpp.next();
             }
+            Log.d(TAG, "parse: number of events " + events.size());
+        } catch(Exception e) {
+            status = false;
+            e.printStackTrace();
         }
-        catch (XmlPullParserException e) {
-            Log.e("Parser", "Cannot parse event", e);
-        }
-        finally {
-            feed.close();
-            Log.d("STREAM", "Input stream closed");
-        }
-        return events;
-    }
 
-    private boolean validItem() {
-        if(title != null && description != null && geoLocation != null && publishedDate != null
-                 && isItem) {
-            return true;
-        }
-        return false;
-    }
-
-    private void resetItemFields() {
-        title = null;
-        description = null;
-        geoLocation = null;
-        publishedDate = null;
+        return status;
     }
 }

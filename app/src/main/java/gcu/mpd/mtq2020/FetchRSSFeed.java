@@ -3,56 +3,72 @@ package gcu.mpd.mtq2020;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 
-public class FetchRSSFeed extends AsyncTask<Void, Void, Boolean> {
-    private MainActivity activity;
-    private List<Event> events;
+public class FetchRSSFeed extends AsyncTask<String, Void, String> {
+    private static final String TAG = "FetchRSSFeed";
     private URL url;
 
-    public FetchRSSFeed(String feedURL, MainActivity activity) {
+    public FetchRSSFeed(String feedURL) {
         setURL(feedURL);
-        this.activity = activity;
     }
 
     private void setURL(String feedURL) {
         try {
             url = new URL(feedURL);
         } catch (MalformedURLException e) {
+            Log.e("setURL", "Error creating URL obj", e);
             e.printStackTrace();
-            Log.e("URL", "Error creating URL obj", e);
         }
     }
 
     @Override
-    protected void onPreExecute() {
-        /* TODO show spinner
-           TODO get users choice from dropdown */
+    protected String doInBackground(String... strings) {
+        String rssFeed = downloadXML();
+
+        if(rssFeed == null) {
+            Log.e(TAG, "doInBackground: Error downloading");
+        }
+        return rssFeed;
     }
 
     @Override
-    protected Boolean doInBackground(Void... voids) {
+    protected void onPostExecute(String rawFeed) {
+        super.onPostExecute(rawFeed);
+
+    }
+
+    private String downloadXML() {
+        StringBuilder xmlResult = new StringBuilder();
+
         try {
-            InputStream inputStream = url.openConnection().getInputStream();
-            events = new TrafficEventParser(inputStream).parseFeed();
-            return true;
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            int response = connection.getResponseCode();
+            Log.d(TAG, "downloadXML: Response code " + response);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+            int charsRead;
+            char[] inputBuffer = new char[500];
+            while(true) {
+                charsRead = reader.read(inputBuffer);
+                if(charsRead < 0) {
+                    break;
+                }
+                if (charsRead > 0) {
+                    xmlResult.append(String.copyValueOf(inputBuffer, 0, charsRead));
+                }
+            }
+            reader.close();
+
+            return xmlResult.toString();
         } catch (IOException e) {
-            Log.e("IO", "Error connecting to URL");
+            e.printStackTrace();
         }
-        return false;
-    }
-
-    @Override
-    protected void onPostExecute(Boolean success) {
-        // TODO disable refreshing state
-
-        if (success) {
-            // TODO update view
-            activity.updateMap(events);
-        }
+        return null;
     }
 }

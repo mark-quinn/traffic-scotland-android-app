@@ -18,15 +18,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, OnMapReadyCallback {
-    private LatLngBounds SCOTLAND = new LatLngBounds(
-            new LatLng(54.0050, 3.0626), new LatLng(57.4778, 4.2247)
-    );
-
-    private MapFragment mapFragment;
-    private ArrayList<LatLng> latlngs = new ArrayList<>();
-    private GoogleMap mMap;
-
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,54 +28,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
-        new TrafficInformation(this).getCurrentIncidents();
-        mapFragment = (MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+
+        FetchRSSFeed fetchRSSFeed = new FetchRSSFeed("https://trafficscotland.org/rss/feeds/currentincidents.aspx");
+        fetchRSSFeed.execute();
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String text = parent.getItemAtPosition(position).toString();
         // TODO guard clause if choice is already current val
-        updateEvents(text);
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
-
-    private void updateEvents(String event) {
-        // TODO refactor better way of handling choice
-        if(event.equalsIgnoreCase("Current Incidents")) {
-            new TrafficInformation(this).getCurrentIncidents();
-            return;
-        }
-        if(event.equalsIgnoreCase("Ongoing Roadworks")) {
-            new TrafficInformation(this).getCurrentRoadworks();
-            return;
-        }
-        if(event.equalsIgnoreCase("Planned Roadworks")) {
-            new TrafficInformation(this).getPlannedRoadworks();
-            return;
-        }
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(SCOTLAND.getCenter(), 5));
-    }
-
-    public void updateMap(List<Event> events) {
-        setLatLng(events);
-        mapFragment.getMapAsync(this);
-    }
-
-    private void setLatLng(List<Event> events) {
-        for (Event event: events) {
-            System.out.println(event.latitude);
-            latlngs.add(new LatLng(event.latitude, event.longitude));
-        }
-    }
+    public void onNothingSelected(AdapterView<?> parent) {}
 }

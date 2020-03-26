@@ -112,11 +112,10 @@ public class MainActivity extends AppCompatActivity
             ArrayList<Event> events = trafficEventParser.getEvents();
 
             for(int i = 0 ; i < events.size() ; i++) {
-
                 createMarker(events.get(i).getLatitude(), events.get(i).getLongitude(), events.get(i).getTitle(), events.get(i).getDescription());
             }
 
-            LatLng UK = new LatLng(-55.3781, 3.4360);
+            LatLng UK = new LatLng(56.4907,-4.2026);
             mMap.moveCamera(CameraUpdateFactory.newLatLng(UK));
         }
 

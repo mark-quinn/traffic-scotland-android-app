@@ -15,6 +15,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.BufferedReader;
@@ -23,6 +24,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements AdapterView.OnItemSelectedListener, TrafficURL {
@@ -107,11 +109,15 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void onMapReady(GoogleMap googleMap) {
             mMap = googleMap;
+            ArrayList<Event> events = trafficEventParser.getEvents();
 
-            // Add a marker in Sydney and move the camera
-            LatLng sydney = new LatLng(-34, 151);
-            mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+            for(int i = 0 ; i < events.size() ; i++) {
+
+                createMarker(events.get(i).getLatitude(), events.get(i).getLongitude(), events.get(i).getTitle(), events.get(i).getDescription());
+            }
+
+            LatLng UK = new LatLng(-55.3781, 3.4360);
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(UK));
         }
 
         private String downloadXML() {
@@ -142,5 +148,15 @@ public class MainActivity extends AppCompatActivity
             }
             return null;
         }
+
+        private Marker createMarker(double latitude, double longitude, String title, String description) {
+
+            return mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(latitude, longitude))
+                    .anchor(0.5f, 0.5f)
+                    .title(title)
+                    .snippet(description));
+        }
+
     }
 }

@@ -3,11 +3,11 @@ package gcu.mpd.mtq2020;
 import java.util.Locale;
 
 public class Event {
-    public String title;
-    public String description;
-    public double latitude;
-    public double longitude;
-    public String publishedDate;
+    private String title;
+    private String description;
+    private double latitude;
+    private double longitude;
+    private String publishedDate;
 
     public String getTitle() {
         return title;
@@ -35,6 +35,14 @@ public class Event {
 
     public String getLocation() {
         return String.format(Locale.ENGLISH, "%f,%f", latitude, longitude);
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
     }
 
     public void setLocation(String geoLocation) {

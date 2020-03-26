@@ -99,7 +99,6 @@ public class MainActivity extends AppCompatActivity
             boolean result = trafficEventParser.parse(rawFeed);
 
             if(result) {
-                // TODO: display events on map
                 SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.map);
                 mapFragment.getMapAsync(this);
@@ -109,6 +108,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void onMapReady(GoogleMap googleMap) {
             mMap = googleMap;
+            mMap.clear(); // TODO: check if clearing markers here is best place
             ArrayList<Event> events = trafficEventParser.getEvents();
 
             for(int i = 0 ; i < events.size() ; i++) {

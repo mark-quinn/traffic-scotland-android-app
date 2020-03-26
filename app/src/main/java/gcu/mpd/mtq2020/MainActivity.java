@@ -6,10 +6,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,13 +28,11 @@ public class MainActivity extends AppCompatActivity
         implements AdapterView.OnItemSelectedListener, TrafficURL {
 
     private static final String TAG = "MainActivity";
-    private ListView listEvents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        listEvents = findViewById(R.id.eventListView);
         Spinner spinner = findViewById(R.id.spinnerEvent);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.event_choices, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -56,20 +60,24 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onNothingSelected(AdapterView<?> parent) {}
 
-    public class FetchRSSFeed extends AsyncTask<String, Void, String> {
+    public class FetchRSSFeed extends AsyncTask<String, Void, String>
+            implements OnMapReadyCallback {
+
         private static final String TAG = "FetchRSSFeed";
         private URL url;
+        private GoogleMap mMap;
+        private TrafficEventParser trafficEventParser;
 
         public FetchRSSFeed(String feedURL) {
             setURL(feedURL);
+            this.trafficEventParser = new TrafficEventParser();
         }
 
         private void setURL(String feedURL) {
             try {
                 url = new URL(feedURL);
             } catch (MalformedURLException e) {
-                Log.e("setURL", "Error creating URL obj", e);
-                e.printStackTrace();
+                Log.e(TAG, "setURL: Error creating URL obj", e);
             }
         }
 
@@ -86,15 +94,24 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(String rawFeed) {
             super.onPostExecute(rawFeed);
-            TrafficEventParser trafficEventParser = new TrafficEventParser();
             boolean result = trafficEventParser.parse(rawFeed);
 
             if(result) {
-                // TODO: update adapter on main view
-                FeedAdapter feedAdapter = new FeedAdapter(
-                        MainActivity.this, R.layout.traffic_event, trafficEventParser.getEvents());
-            listEvents.setAdapter(feedAdapter);
+                // TODO: display events on map
+                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.map);
+                mapFragment.getMapAsync(this);
             }
+        }
+
+        @Override
+        public void onMapReady(GoogleMap googleMap) {
+            mMap = googleMap;
+
+            // Add a marker in Sydney and move the camera
+            LatLng sydney = new LatLng(-34, 151);
+            mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         }
 
         private String downloadXML() {

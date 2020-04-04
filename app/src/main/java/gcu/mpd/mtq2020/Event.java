@@ -1,14 +1,23 @@
 package gcu.mpd.mtq2020;
 
+import android.util.Log;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 public class Event {
+    private static final String TAG = "Event";
+
     private String title;
     private String description;
     private double latitude;
     private double longitude;
     private String publishedDate;
     private EventType type;
+    private Date startDate;
+    private Date endDate;
 
     public String getTitle() {
         return title;
@@ -23,7 +32,11 @@ public class Event {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        if (type == EventType.CURRENT_INCIDENT) {
+            this.description = description;
+        } else {
+            this.description = parseDescription(description);
+        }
     }
 
     public String getPublishedDate() {
@@ -54,5 +67,37 @@ public class Event {
 
     public void setEventType(EventType type) {
         this.type = type;
+    }
+
+    private String parseDescription(String description) {
+        String[] tokens = description.split("<br />");
+
+        for (String token : tokens) {
+            System.out.println(token);
+
+            if (token.contains("Start Date")) {
+                Log.d(TAG, "parseDescription: Event start date " + token);
+                String date = token.split("Start Date: ")[1];
+                try {
+                    startDate = new SimpleDateFormat("E, dd MMM yyyy - HH:mm", Locale.UK)
+                            .parse(date);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    // TODO: set startDate to null if failed format?
+                }
+            } else if (token.contains("End Date")) {
+                Log.d(TAG, "parseDescription: Event end date " + token);
+                String date = token.split("End Date: ")[1];
+                try {
+                    endDate = new SimpleDateFormat("E, dd MMM yyyy - HH:mm", Locale.UK)
+                            .parse(date);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    // TODO: set endDate to null if failed format?
+                }
+            }
+        }
+        String desc = tokens[tokens.length-1];
+        return tokens[tokens.length-1];
     }
 }

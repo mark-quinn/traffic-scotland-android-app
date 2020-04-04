@@ -19,7 +19,7 @@ public class TrafficEventParser {
         return events;
     }
 
-    public boolean parse(String xmlData) {
+    public boolean parse(String xmlData, EventType type) {
         boolean status = true;
         Event currentRecord = null;
         boolean inEntry = false;
@@ -47,6 +47,7 @@ public class TrafficEventParser {
                     case XmlPullParser.END_TAG:
                         if(inEntry) {
                             if("item".equalsIgnoreCase(tagName)) {
+                                currentRecord.setEventType(type);
                                 events.add(currentRecord);
                                 inEntry = false;
                             } else if("title".equalsIgnoreCase(tagName)) {

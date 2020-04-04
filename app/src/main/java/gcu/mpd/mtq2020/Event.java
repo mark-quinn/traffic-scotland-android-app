@@ -8,6 +8,7 @@ public class Event {
     private double latitude;
     private double longitude;
     private String publishedDate;
+    private EventType type;
 
     public String getTitle() {
         return title;
@@ -49,5 +50,9 @@ public class Event {
         String[] splitStr = geoLocation.split("\\s+");
         this.latitude = Double.parseDouble(splitStr[0]);
         this.longitude = Double.parseDouble(splitStr[1]);
+    }
+
+    public void setEventType(EventType type) {
+        this.type = type;
     }
 }

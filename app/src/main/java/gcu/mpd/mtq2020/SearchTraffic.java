@@ -8,8 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.DatePicker;
-import android.widget.ListView;
-
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,7 +18,6 @@ public class SearchTraffic extends AppCompatActivity {
     private static final String TAG = "SearchTraffic";
     private DatePickerDialog picker;
     private EditText eText;
-    private ListView listEvents;
     private Button btnSearch;
     private Date date;
     private Calendar cal;

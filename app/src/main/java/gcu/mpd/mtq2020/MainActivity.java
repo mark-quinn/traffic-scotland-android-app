@@ -48,19 +48,20 @@ public class MainActivity extends AppCompatActivity
         FetchRSSFeed fetchRSSFeed = null;
 
         if (text.equalsIgnoreCase("current incidents")) {
-            fetchRSSFeed = new FetchRSSFeed(TrafficURL.currentIncidents);
+            fetchRSSFeed = new FetchRSSFeed(TrafficURL.currentIncidents, EventType.CURRENT_INCIDENT);
         }
         if (text.equalsIgnoreCase("ongoing roadworks")) {
-            fetchRSSFeed = new FetchRSSFeed(TrafficURL.ongoingRoadworks);
+            fetchRSSFeed = new FetchRSSFeed(TrafficURL.ongoingRoadworks, EventType.ONGOING_ROADWORK);
         }
         if (text.equalsIgnoreCase("planned roadworks")) {
-            fetchRSSFeed = new FetchRSSFeed(TrafficURL.plannedRoadworks);
+            fetchRSSFeed = new FetchRSSFeed(TrafficURL.plannedRoadworks, EventType.PLANNED_ROADWORK);
         }
         fetchRSSFeed.execute();
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent) {}
+    public void onNothingSelected(AdapterView<?> parent) {
+    }
 
     public class FetchRSSFeed extends AsyncTask<String, Void, String>
             implements OnMapReadyCallback {
@@ -69,10 +70,12 @@ public class MainActivity extends AppCompatActivity
         private URL url;
         private GoogleMap mMap;
         private TrafficEventParser trafficEventParser;
+        private EventType type;
 
-        public FetchRSSFeed(String feedURL) {
+        public FetchRSSFeed(String feedURL, EventType type) {
             setURL(feedURL);
             this.trafficEventParser = new TrafficEventParser();
+            this.type = type;
         }
 
         private void setURL(String feedURL) {
@@ -87,7 +90,7 @@ public class MainActivity extends AppCompatActivity
         protected String doInBackground(String... strings) {
             String rssFeed = downloadXML();
 
-            if(rssFeed == null) {
+            if (rssFeed == null) {
                 Log.e(TAG, "doInBackground: Error downloading");
             }
             return rssFeed;
@@ -96,27 +99,13 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(String rawFeed) {
             super.onPostExecute(rawFeed);
-            boolean result = trafficEventParser.parse(rawFeed);
+            boolean result = trafficEventParser.parse(rawFeed, type);
 
-            if(result) {
+            if (result) {
                 SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.map);
                 mapFragment.getMapAsync(this);
             }
-        }
-
-        @Override
-        public void onMapReady(GoogleMap googleMap) {
-            mMap = googleMap;
-            mMap.clear(); // TODO: check if clearing markers here is best place
-            ArrayList<Event> events = trafficEventParser.getEvents();
-
-            for(int i = 0 ; i < events.size() ; i++) {
-                createMarker(events.get(i).getLatitude(), events.get(i).getLongitude(), events.get(i).getTitle(), events.get(i).getDescription());
-            }
-
-            LatLng UK = new LatLng(56.4907,-4.2026);
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(UK));
         }
 
         private String downloadXML() {
@@ -130,9 +119,9 @@ public class MainActivity extends AppCompatActivity
 
                 int charsRead;
                 char[] inputBuffer = new char[500];
-                while(true) {
+                while (true) {
                     charsRead = reader.read(inputBuffer);
-                    if(charsRead < 0) {
+                    if (charsRead < 0) {
                         break;
                     }
                     if (charsRead > 0) {
@@ -148,7 +137,23 @@ public class MainActivity extends AppCompatActivity
             return null;
         }
 
-        private Marker createMarker(double latitude, double longitude, String title, String description) {
+        @Override
+        public void onMapReady(GoogleMap googleMap) {
+            mMap = googleMap;
+            mMap.clear(); // TODO: check if clearing markers here is best place
+            ArrayList<Event> events = trafficEventParser.getEvents();
+
+            for (int i = 0; i < events.size(); i++) {
+                createMarker(events.get(i).getLatitude(), events.get(i).getLongitude(),
+                        events.get(i).getTitle(), events.get(i).getDescription());
+            }
+
+            LatLng UK = new LatLng(56.4907, -4.2026);
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(UK));
+        }
+
+        private Marker createMarker(double latitude, double longitude,
+                                    String title, String description) {
 
             return mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(latitude, longitude))
@@ -156,6 +161,5 @@ public class MainActivity extends AppCompatActivity
                     .title(title)
                     .snippet(description));
         }
-
     }
 }

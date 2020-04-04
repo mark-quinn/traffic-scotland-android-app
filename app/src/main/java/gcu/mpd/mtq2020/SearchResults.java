@@ -5,12 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ListView;
 
 import java.util.Date;
 
 public class SearchResults extends AppCompatActivity {
     private static final String TAG = "SearchResults";
     private Date date;
+    private ListView listEvents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

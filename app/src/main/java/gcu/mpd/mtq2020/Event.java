@@ -103,6 +103,7 @@ public class Event {
                 }
             }
         }
+        // TODO: format description further
         String desc = tokens[tokens.length-1];
         return tokens[tokens.length-1];
     }

@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.DatePicker;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,6 +23,7 @@ public class SearchTraffic extends AppCompatActivity {
     private Button btnSearch;
     private Date date;
     private Calendar cal;
+    private RadioGroup rGrp;
 
     public SearchTraffic() {
         this.cal = Calendar.getInstance();
@@ -31,6 +34,7 @@ public class SearchTraffic extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_traffic);
         eText = findViewById(R.id.eventDate);
+        rGrp = findViewById(R.id.roadSelection);
         eText.setInputType(InputType.TYPE_NULL);
         eText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,11 +64,25 @@ public class SearchTraffic extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                // TODO: inflate search results activity with criteria as parameter
+                RadioButton checkedButton = findViewById(rGrp.getCheckedRadioButtonId());
+                String text = (String) checkedButton.getText();
+                RoadType road = getRoadType(text);
+
                 Intent intent = new Intent(SearchTraffic.this, SearchResults.class);
                 intent.putExtra("DATE", date);
+                intent.putExtra("ROAD", road);
                 startActivity(intent);
             }
         });
+    }
+
+    private RoadType getRoadType(String road) {
+        RoadType rt;
+        if (road.equalsIgnoreCase("motorway")) {
+           rt = RoadType.MOTORWAY;
+        } else {
+            rt = RoadType.A_ROAD;
+        }
+        return rt;
     }
 }

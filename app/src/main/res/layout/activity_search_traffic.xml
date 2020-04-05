@@ -6,25 +6,72 @@
     android:layout_height="match_parent"
     tools:context=".SearchTraffic">
 
+
     <EditText
         android:id="@+id/eventDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="24dp"
         android:ems="10"
         android:hint="Enter Date"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="@+id/roadSelection"
+        app:layout_constraintTop_toBottomOf="@+id/roadSelection" />
 
     <Button
         android:id="@+id/btnSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="48dp"
         android:text="Search"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/eventDate" />
+
+    <RadioGroup
+        android:id="@+id/roadSelection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <RadioButton
+            android:id="@+id/radio0"
+            android:layout_width="150sp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/radio_flat_selector"
+            android:button="@android:color/transparent"
+            android:checked="true"
+            android:gravity="center"
+            android:paddingLeft="16dp"
+            android:paddingTop="3dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="3dp"
+            android:text="Motorway"
+            android:textColor="@color/radio_flat_text_selector" />
+
+        <RadioButton
+            android:id="@+id/radio1"
+            android:layout_width="150sp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/radio_flat_selector"
+            android:button="@android:color/transparent"
+            android:gravity="center"
+            android:paddingLeft="16dp"
+            android:paddingTop="3dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="3dp"
+            android:text="A-Road"
+            android:textColor="@color/radio_flat_text_selector" />
+
+    </RadioGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -24,6 +24,7 @@ public class SearchResults extends AppCompatActivity implements AsyncTaskListene
     private ListView listEvents;
     private List<Event> resultEvents;
     private TextView tvw;
+    private RoadType road;
 
     public SearchResults() {
         resultEvents = new ArrayList<>();
@@ -38,6 +39,8 @@ public class SearchResults extends AppCompatActivity implements AsyncTaskListene
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent intent = getIntent();
         date = (Date)intent.getSerializableExtra("DATE");
+        road = (RoadType)intent.getSerializableExtra("ROAD");
+
         Log.i(TAG, "onCreate: Date passed " + date);
         FetchRSSFeed fetchRSSFeed = new FetchRSSFeed(this, TrafficURL.ongoingRoadworks, EventType.ONGOING_ROADWORK);
         fetchRSSFeed.execute();

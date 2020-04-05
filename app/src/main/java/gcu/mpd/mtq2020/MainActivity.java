@@ -1,8 +1,6 @@
 package gcu.mpd.mtq2020;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,18 +16,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
-        implements AdapterView.OnItemSelectedListener, TrafficURL {
+        implements AdapterView.OnItemSelectedListener, TrafficURL,
+            OnMapReadyCallback, AsyncTaskListener {
 
     private static final String TAG = "MainActivity";
+    private GoogleMap mMap;
+    private ArrayList<Event> events;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,118 +43,51 @@ public class MainActivity extends AppCompatActivity
         FetchRSSFeed fetchRSSFeed = null;
 
         if (text.equalsIgnoreCase("current incidents")) {
-            fetchRSSFeed = new FetchRSSFeed(TrafficURL.currentIncidents, EventType.CURRENT_INCIDENT);
+            fetchRSSFeed = new FetchRSSFeed(this, TrafficURL.currentIncidents, EventType.CURRENT_INCIDENT);
         }
         if (text.equalsIgnoreCase("ongoing roadworks")) {
-            fetchRSSFeed = new FetchRSSFeed(TrafficURL.ongoingRoadworks, EventType.ONGOING_ROADWORK);
+            fetchRSSFeed = new FetchRSSFeed(this, TrafficURL.ongoingRoadworks, EventType.ONGOING_ROADWORK);
         }
         if (text.equalsIgnoreCase("planned roadworks")) {
-            fetchRSSFeed = new FetchRSSFeed(TrafficURL.plannedRoadworks, EventType.PLANNED_ROADWORK);
+            fetchRSSFeed = new FetchRSSFeed(this, TrafficURL.plannedRoadworks, EventType.PLANNED_ROADWORK);
         }
         fetchRSSFeed.execute();
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent) {
+    public void newEvents(ArrayList<Event> events) {
+        this.events = events;
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
     }
 
-    public class FetchRSSFeed extends AsyncTask<String, Void, String>
-            implements OnMapReadyCallback {
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        mMap.clear(); // TODO: check if clearing markers here is best place
 
-        private static final String TAG = "FetchRSSFeed";
-        private URL url;
-        private GoogleMap mMap;
-        private TrafficEventParser trafficEventParser;
-        private EventType type;
-
-        public FetchRSSFeed(String feedURL, EventType type) {
-            setURL(feedURL);
-            this.trafficEventParser = new TrafficEventParser();
-            this.type = type;
+        for (int i = 0; i < events.size(); i++) {
+            createMarker(events.get(i).getLatitude(), events.get(i).getLongitude(),
+                    events.get(i).getTitle(), events.get(i).getDescription());
         }
 
-        private void setURL(String feedURL) {
-            try {
-                url = new URL(feedURL);
-            } catch (MalformedURLException e) {
-                Log.e(TAG, "setURL: Error creating URL obj", e);
-            }
-        }
+        LatLng UK = new LatLng(56.4907, -4.2026);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(UK));
+    }
 
-        @Override
-        protected String doInBackground(String... strings) {
-            String rssFeed = downloadXML();
+    private Marker createMarker(double latitude, double longitude,
+                                String title, String description) {
 
-            if (rssFeed == null) {
-                Log.e(TAG, "doInBackground: Error downloading");
-            }
-            return rssFeed;
-        }
+        return mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(latitude, longitude))
+                .anchor(0.5f, 0.5f)
+                .title(title)
+                .snippet(description));
+    }
 
-        @Override
-        protected void onPostExecute(String rawFeed) {
-            super.onPostExecute(rawFeed);
-            boolean result = trafficEventParser.parse(rawFeed, type);
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
 
-            if (result) {
-                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                        .findFragmentById(R.id.map);
-                mapFragment.getMapAsync(this);
-            }
-        }
-
-        private String downloadXML() {
-            StringBuilder xmlResult = new StringBuilder();
-
-            try {
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                int response = connection.getResponseCode();
-                Log.d(TAG, "downloadXML: Response code " + response);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-                int charsRead;
-                char[] inputBuffer = new char[500];
-                while (true) {
-                    charsRead = reader.read(inputBuffer);
-                    if (charsRead < 0) {
-                        break;
-                    }
-                    if (charsRead > 0) {
-                        xmlResult.append(String.copyValueOf(inputBuffer, 0, charsRead));
-                    }
-                }
-                reader.close();
-
-                return xmlResult.toString();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        public void onMapReady(GoogleMap googleMap) {
-            mMap = googleMap;
-            mMap.clear(); // TODO: check if clearing markers here is best place
-            ArrayList<Event> events = trafficEventParser.getEvents();
-
-            for (int i = 0; i < events.size(); i++) {
-                createMarker(events.get(i).getLatitude(), events.get(i).getLongitude(),
-                        events.get(i).getTitle(), events.get(i).getDescription());
-            }
-
-            LatLng UK = new LatLng(56.4907, -4.2026);
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(UK));
-        }
-
-        private Marker createMarker(double latitude, double longitude,
-                                    String title, String description) {
-
-            return mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(latitude, longitude))
-                    .anchor(0.5f, 0.5f)
-                    .title(title)
-                    .snippet(description));
-        }
     }
 }

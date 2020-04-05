@@ -2,6 +2,7 @@ package gcu.mpd.mtq2020;
 
 import android.util.Log;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -61,6 +62,11 @@ public class Event {
 
     public Date getStartDate() {
         return startDate;
+    }
+
+    public String getSimpleStartDate() {
+        DateFormat df = new SimpleDateFormat("dd/MM/yyy");
+        return df.format(startDate);
     }
 
     public Date getEndDate() {

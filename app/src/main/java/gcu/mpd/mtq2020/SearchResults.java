@@ -8,9 +8,14 @@ import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class SearchResults extends AppCompatActivity implements AsyncTaskListener {
     private static final String TAG = "SearchResults";
@@ -39,7 +44,7 @@ public class SearchResults extends AppCompatActivity implements AsyncTaskListene
     @Override
     public void newEvents(ArrayList<Event> events) {
         Log.d(TAG, "newEvents: New events count" + events.size());
-        filterByCriteria(date, events);
+        filterByDay(date, events);
         Log.d(TAG, "newEvents: Filter result events" + resultEvents.size());
         tvw.setText("Found " + resultEvents.size() + " events matching the search criteria");
         FeedAdapter feedAdapter = new FeedAdapter(
@@ -47,7 +52,17 @@ public class SearchResults extends AppCompatActivity implements AsyncTaskListene
         listEvents.setAdapter(feedAdapter);
     }
 
-    private void filterByCriteria(Date date, List<Event> events) {
+    private void filterByDay(Date date, List<Event> events) {
+        DateFormat df = new SimpleDateFormat("dd/MM/yyy", Locale.UK);
+        String formattedDate = df.format(date);
+        for (Event event: events) {
+            if (formattedDate.equals(event.getSimpleStartDate())) {
+                resultEvents.add(event);
+            }
+        }
+    }
+
+    private void filterByRange(Date date, List<Event> events) {
         for (Event event: events) {
             Log.d(TAG, "filterByCriteria: Event start date" + event.getStartDate());
             Log.d(TAG, "filterByCriteria: Event end date" + event.getEndDate());

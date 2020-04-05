@@ -59,6 +59,14 @@ public class Event {
         return longitude;
     }
 
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
     public void setLocation(String geoLocation) {
         String[] splitStr = geoLocation.split("\\s+");
         this.latitude = Double.parseDouble(splitStr[0]);
@@ -76,7 +84,6 @@ public class Event {
             System.out.println(token);
 
             if (token.contains("Start Date")) {
-                Log.d(TAG, "parseDescription: Event start date " + token);
                 String date = token.split("Start Date: ")[1];
                 try {
                     startDate = new SimpleDateFormat("E, dd MMM yyyy - HH:mm", Locale.UK)
@@ -86,7 +93,6 @@ public class Event {
                     // TODO: set startDate to null if failed format?
                 }
             } else if (token.contains("End Date")) {
-                Log.d(TAG, "parseDescription: Event end date " + token);
                 String date = token.split("End Date: ")[1];
                 try {
                     endDate = new SimpleDateFormat("E, dd MMM yyyy - HH:mm", Locale.UK)

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -34,6 +35,7 @@ public class SearchResults extends AppCompatActivity implements AsyncTaskListene
         setContentView(R.layout.activity_search_results);
         listEvents = findViewById(R.id.eventListView);
         tvw = findViewById(R.id.totalEvents);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent intent = getIntent();
         date = (Date)intent.getSerializableExtra("DATE");
         Log.i(TAG, "onCreate: Date passed " + date);
@@ -50,6 +52,12 @@ public class SearchResults extends AppCompatActivity implements AsyncTaskListene
         FeedAdapter feedAdapter = new FeedAdapter(
                 SearchResults.this, R.layout.traffic_event, resultEvents);
         listEvents.setAdapter(feedAdapter);
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent = new Intent(getApplicationContext(), SearchTraffic.class);
+        startActivityForResult(intent, 0);
+        return true;
     }
 
     private void filterByDay(Date date, List<Event> events) {

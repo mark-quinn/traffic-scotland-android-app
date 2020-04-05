@@ -8,23 +8,15 @@ import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
-        implements AdapterView.OnItemSelectedListener, TrafficURL,
-            OnMapReadyCallback, AsyncTaskListener {
+        implements AdapterView.OnItemSelectedListener, TrafficURL, AsyncTaskListener {
 
     private static final String TAG = "MainActivity";
-    private GoogleMap mMap;
-    private ArrayList<Event> events;
+    private MapsActivity mMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,34 +48,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void newEvents(ArrayList<Event> events) {
-        this.events = events;
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        mMap.clear(); // TODO: check if clearing markers here is best place
-
-        for (int i = 0; i < events.size(); i++) {
-            createMarker(events.get(i).getLatitude(), events.get(i).getLongitude(),
-                    events.get(i).getTitle(), events.get(i).getDescription());
-        }
-
-        LatLng UK = new LatLng(56.4907, -4.2026);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(UK));
-    }
-
-    private Marker createMarker(double latitude, double longitude,
-                                String title, String description) {
-
-        return mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(latitude, longitude))
-                .anchor(0.5f, 0.5f)
-                .title(title)
-                .snippet(description));
+        mMap = new MapsActivity(events);
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(mMap);
     }
 
     @Override

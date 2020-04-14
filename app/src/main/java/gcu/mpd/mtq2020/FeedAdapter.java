@@ -1,6 +1,7 @@
 package gcu.mpd.mtq2020;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,14 @@ public class FeedAdapter extends ArrayAdapter {
         viewHolder.tvDescription.setText(currentApp.getDescription());
         viewHolder.tvPubDate.setText(currentApp.getPublishedDate());
         viewHolder.tvPoint.setText(currentApp.getLocation());
+
+        if (currentApp.getEventLength() == EventLength.SHORT) {
+            viewHolder.tvTitle.setTextColor(Color.GREEN);
+        } else if (currentApp.getEventLength() == EventLength.INTERMEDIATE) {
+            viewHolder.tvTitle.setTextColor(Color.YELLOW);
+        } else {
+            viewHolder.tvTitle.setTextColor(Color.RED);
+        }
 
         return convertView;
     }

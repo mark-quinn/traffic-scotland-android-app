@@ -2,11 +2,15 @@ package gcu.mpd.mtq2020;
 
 import android.util.Log;
 
+import org.joda.time.Duration;
+import org.joda.time.Interval;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
 
 public class Event {
     private static final String TAG = "Event";
@@ -19,6 +23,7 @@ public class Event {
     private EventType type;
     private Date startDate;
     private Date endDate;
+    private EventLength eventLength;
 
     public String getTitle() {
         return title;
@@ -83,6 +88,24 @@ public class Event {
         this.type = type;
     }
 
+    public EventLength getEventLength () {
+        return eventLength;
+    }
+
+    public void setEventLength() {
+        Interval interval = new Interval(startDate.getTime(), endDate.getTime());
+        Duration period = interval.toDuration();
+        long days = period.getStandardDays();
+
+        if(days <= 7) {
+            eventLength = EventLength.SHORT;
+        } else if (days <= 31) {
+            eventLength = EventLength.INTERMEDIATE;
+        } else {
+            eventLength = EventLength.LONG;
+        }
+    }
+
     private String parseDescription(String description) {
         String[] tokens = description.split("<br />");
 
@@ -109,6 +132,8 @@ public class Event {
                 }
             }
         }
+        setEventLength();
+
         // TODO: format description further
         String desc = tokens[tokens.length-1];
         return tokens[tokens.length-1];

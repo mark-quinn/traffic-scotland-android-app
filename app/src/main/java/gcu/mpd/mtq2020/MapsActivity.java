@@ -18,9 +18,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     private ArrayList<Event> events;
+    private Event event = null;
 
     public MapsActivity(Event event) {
-        // TODO: overload constructor so it accepts single event too
+        this.event = event;
     }
 
     public MapsActivity(ArrayList<Event> events) {
@@ -41,14 +42,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.clear();
+        LatLng location = new LatLng(56.4907, -4.2026);
 
-        for (int i = 0; i < events.size(); i++) {
-            createMarker(events.get(i).getLatitude(), events.get(i).getLongitude(),
-                    events.get(i).getTitle(), events.get(i).getDescription());
+        if(event != null) {
+            createMarker(event.getLatitude(), event.getLongitude(),
+                    event.getTitle(), event.getDescription());
+            location = new LatLng(event.getLatitude(), event.getLongitude());
+        } else {
+            for (int i = 0; i < events.size(); i++) {
+                createMarker(events.get(i).getLatitude(), events.get(i).getLongitude(),
+                        events.get(i).getTitle(), events.get(i).getDescription());
+            }
         }
-
-        LatLng UK = new LatLng(56.4907, -4.2026);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(UK));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
     }
 
     private Marker createMarker(double latitude, double longitude,

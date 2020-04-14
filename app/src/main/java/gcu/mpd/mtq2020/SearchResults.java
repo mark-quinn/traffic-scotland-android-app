@@ -6,17 +6,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
 public class SearchResults extends AppCompatActivity implements AsyncTaskListener {
     private static final String TAG = "SearchResults";
@@ -55,6 +55,7 @@ public class SearchResults extends AppCompatActivity implements AsyncTaskListene
         FeedAdapter feedAdapter = new FeedAdapter(
                 SearchResults.this, R.layout.traffic_event, resultEvents);
         listEvents.setAdapter(feedAdapter);
+        listEvents.setOnItemClickListener(onItemClickListener);
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -72,6 +73,14 @@ public class SearchResults extends AppCompatActivity implements AsyncTaskListene
             }
         }
     }
+
+    private AdapterView.OnItemClickListener onItemClickListener =
+            new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    //TODO: start new event details activity
+                }
+            };
 
     private void filterByRange(Date date, List<Event> events) {
         for (Event event: events) {

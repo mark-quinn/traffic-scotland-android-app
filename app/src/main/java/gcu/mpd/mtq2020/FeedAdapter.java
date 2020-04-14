@@ -1,6 +1,7 @@
 package gcu.mpd.mtq2020;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,11 +19,13 @@ public class FeedAdapter extends ArrayAdapter {
     private final int layoutResource;
     private final LayoutInflater layoutInflater;
     private List<Event> events;
+    private Context context;
 
     public FeedAdapter(@NonNull Context context, int resource, List<Event> events) {
         super(context, resource);
         this.layoutResource = resource;
         this.layoutInflater = LayoutInflater.from(context);
+        this.context = context;
         this.events = events;
     }
 
@@ -34,7 +37,7 @@ public class FeedAdapter extends ArrayAdapter {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        ViewHolder viewHolder;
+        final ViewHolder viewHolder;
 
         if(convertView == null) {
             convertView = layoutInflater.inflate(layoutResource, parent, false);
@@ -44,7 +47,7 @@ public class FeedAdapter extends ArrayAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        Event currentApp = events.get(position);
+        final Event currentApp = events.get(position);
 
         viewHolder.tvTitle.setText(currentApp.getTitle());
         viewHolder.tvDescription.setText(currentApp.getDescription());
@@ -58,6 +61,14 @@ public class FeedAdapter extends ArrayAdapter {
         } else {
             viewHolder.tvTitle.setTextColor(Color.RED);
         }
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, EventDetails.class);
+                intent.putExtra("EVENT", currentApp);
+                context.startActivity(intent);
+            }
+        });
 
         return convertView;
     }

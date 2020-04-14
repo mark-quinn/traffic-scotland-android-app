@@ -25,10 +25,10 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="25dp"
         android:layout_marginBottom="32dp"
+        app:cameraZoom="6"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerEvent"
-        app:cameraZoom="6" />
+        app:layout_constraintTop_toBottomOf="@+id/spinnerEvent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

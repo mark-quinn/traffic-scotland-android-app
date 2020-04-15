@@ -94,11 +94,12 @@ public class SearchTraffic extends AppCompatActivity {
             public void onClick(View v) {
                 RadioButton checkedButton = findViewById(rGrp.getCheckedRadioButtonId());
                 String text = (String) checkedButton.getText();
-                RoadType road = getRoadType(text);
+                RoadType roadType = getRoadType(text);
 
                 Intent intent = new Intent(SearchTraffic.this, SearchResults.class);
                 intent.putExtra("DATE", date);
-                intent.putExtra("ROAD", road);
+                intent.putExtra("ROAD_TYPE", roadType);
+                intent.putExtra("ROAD", selectedRoad);
                 startActivity(intent);
             }
         });

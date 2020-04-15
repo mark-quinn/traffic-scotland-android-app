@@ -21,7 +21,8 @@ public class SearchResults extends AppCompatActivity implements AsyncTaskListene
     private ListView listEvents;
     private List<Event> resultEvents;
     private TextView tvw;
-    private RoadType road;
+    private RoadType roadType;
+    private String road;
 
     public SearchResults() {
         resultEvents = new ArrayList<>();
@@ -35,10 +36,13 @@ public class SearchResults extends AppCompatActivity implements AsyncTaskListene
         tvw = findViewById(R.id.totalEvents);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent intent = getIntent();
-        date = (Date)intent.getSerializableExtra("DATE");
-        road = (RoadType)intent.getSerializableExtra("ROAD");
+        date = (Date) intent.getSerializableExtra("DATE");
+        roadType = (RoadType) intent.getSerializableExtra("ROAD_TYPE");
+        road = intent.getStringExtra("ROAD");
 
         Log.i(TAG, "onCreate: Date passed " + date);
+
+        //TODO: need to fix this
         FetchRSSFeed fetchRSSFeed = new FetchRSSFeed(this, TrafficURL.ongoingRoadworks, EventType.ONGOING_ROADWORK);
         fetchRSSFeed.execute();
     }
@@ -57,7 +61,7 @@ public class SearchResults extends AppCompatActivity implements AsyncTaskListene
     private void filterByDay(Date date, List<Event> events) {
         DateFormat df = new SimpleDateFormat("dd/MM/yyy", Locale.UK);
         String formattedDate = df.format(date);
-        for (Event event: events) {
+        for (Event event : events) {
             if (formattedDate.equals(event.getSimpleStartDate())) {
                 resultEvents.add(event);
             }
@@ -65,7 +69,7 @@ public class SearchResults extends AppCompatActivity implements AsyncTaskListene
     }
 
     private void filterByRange(Date date, List<Event> events) {
-        for (Event event: events) {
+        for (Event event : events) {
             Log.d(TAG, "filterByCriteria: Event start date" + event.getStartDate());
             Log.d(TAG, "filterByCriteria: Event end date" + event.getEndDate());
             if (event.getStartDate().before(date) && event.getEndDate().after(date)) {

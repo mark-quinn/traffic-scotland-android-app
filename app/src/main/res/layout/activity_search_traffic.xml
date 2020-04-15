@@ -16,16 +16,15 @@
         android:ems="10"
         android:hint="Enter Date"
         app:layout_constraintStart_toStartOf="@+id/roadSelection"
-        app:layout_constraintTop_toBottomOf="@+id/roadSelection" />
+        app:layout_constraintTop_toBottomOf="@+id/roadOptions" />
 
     <Button
         android:id="@+id/btnSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="24dp"
         android:text="Search"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/eventDate"
         app:layout_constraintTop_toBottomOf="@+id/eventDate" />
 
     <RadioGroup
@@ -44,7 +43,7 @@
 
 
         <RadioButton
-            android:id="@+id/radio0"
+            android:id="@+id/radioMotorway"
             android:layout_width="150sp"
             android:layout_height="wrap_content"
             android:background="@drawable/radio_flat_selector"
@@ -59,7 +58,7 @@
             android:textColor="@color/radio_flat_text_selector" />
 
         <RadioButton
-            android:id="@+id/radio1"
+            android:id="@+id/radioRoad"
             android:layout_width="150sp"
             android:layout_height="wrap_content"
             android:background="@drawable/radio_flat_selector"
@@ -73,5 +72,16 @@
             android:textColor="@color/radio_flat_text_selector" />
 
     </RadioGroup>
+
+    <Spinner
+        android:id="@+id/roadOptions"
+        android:layout_width="379dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/roadSelection"
+        app:layout_constraintTop_toBottomOf="@+id/roadSelection" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

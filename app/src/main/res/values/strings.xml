@@ -5,6 +5,26 @@
         <item>Ongoing Roadworks</item>
         <item>Planned Roadworks</item>
     </string-array>
+
+    <string-array name="motorways">
+        <item>M73</item>
+        <item>A74</item>
+        <item>M74</item>
+        <item>M77</item>
+        <item>M8</item>
+        <item>M80</item>
+        <item>A823</item>
+        <item>M876</item>
+        <item>M898</item>
+        <item>M9</item>
+        <item>M90</item>
+        <item>A8</item>
+    </string-array>
+
+    <string-array name="a_roads">
+        <item>A-Road</item>
+    </string-array>
+
     <string name="title_activity_maps">Map</string>
 
     <!-- TODO: Remove or change this placeholder text -->

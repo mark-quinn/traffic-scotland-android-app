@@ -15,12 +15,9 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import java.util.Calendar;
@@ -29,7 +26,6 @@ import java.util.Date;
 import gcu.mpd.mtq2020.R;
 import gcu.mpd.mtq2020.RoadType;
 import gcu.mpd.mtq2020.SearchResults;
-import gcu.mpd.mtq2020.SearchTraffic;
 
 public class SearchFragment extends Fragment {
 

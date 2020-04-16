@@ -1,61 +1,30 @@
 package gcu.mpd.mtq2020;
 
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
-import com.google.android.gms.maps.SupportMapFragment;
-
-import java.util.ArrayList;
-
-public class MainActivity extends AppCompatActivity
-        implements AdapterView.OnItemSelectedListener, TrafficURL, AsyncTaskListener {
-
-    private static final String TAG = "MainActivity";
-    private MapsActivity mMap;
+public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Spinner spinner = findViewById(R.id.spinnerEvent);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.event_choices, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
+        setContentView(R.layout.activity_main2);
+        BottomNavigationView navView = findViewById(R.id.nav_view);
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.navigation_home, R.id.navigation_routes, R.id.navigation_search)
+                .build();
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(navView, navController);
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String text = parent.getItemAtPosition(position).toString();
-        FetchRSSFeed fetchRSSFeed = null;
-
-        if (text.equalsIgnoreCase("current incidents")) {
-            fetchRSSFeed = new FetchRSSFeed(this, TrafficURL.currentIncidents, EventType.CURRENT_INCIDENT);
-        }
-        if (text.equalsIgnoreCase("ongoing roadworks")) {
-            fetchRSSFeed = new FetchRSSFeed(this, TrafficURL.ongoingRoadworks, EventType.ONGOING_ROADWORK);
-        }
-        if (text.equalsIgnoreCase("planned roadworks")) {
-            fetchRSSFeed = new FetchRSSFeed(this, TrafficURL.plannedRoadworks, EventType.PLANNED_ROADWORK);
-        }
-        fetchRSSFeed.execute();
-    }
-
-    @Override
-    public void newEvents(ArrayList<Event> events) {
-        mMap = new MapsActivity(events);
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(mMap);
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
 }

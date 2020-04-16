@@ -22,8 +22,8 @@ public class Event implements Serializable {
     private double longitude;
     private String publishedDate;
     private EventType type;
-    private Date startDate;
-    private Date endDate;
+    private Date startDate = null;
+    private Date endDate = null;
     private EventLength eventLength;
 
     public String getTitle() {
@@ -133,7 +133,10 @@ public class Event implements Serializable {
                 }
             }
         }
-        setEventLength();
+
+        if (startDate != null && endDate != null) {
+            setEventLength();
+        }
 
         // TODO: format description further
         String desc = tokens[tokens.length-1];

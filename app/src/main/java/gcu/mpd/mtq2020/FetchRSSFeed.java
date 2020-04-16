@@ -4,12 +4,16 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import androidx.fragment.app.Fragment;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import gcu.mpd.mtq2020.ui.home.HomeFragment;
 
 public class FetchRSSFeed extends AsyncTask<String, Void, String> {
 
@@ -24,6 +28,13 @@ public class FetchRSSFeed extends AsyncTask<String, Void, String> {
         this.trafficEventParser = new TrafficEventParser();
         this.type = type;
         listener = (AsyncTaskListener) context;
+    }
+
+    public FetchRSSFeed(Fragment fragment, String feedURL, EventType type) {
+        setURL(feedURL);
+        this.trafficEventParser = new TrafficEventParser();
+        this.type = type;
+        listener = (AsyncTaskListener) fragment;
     }
 
     private void setURL(String feedURL) {

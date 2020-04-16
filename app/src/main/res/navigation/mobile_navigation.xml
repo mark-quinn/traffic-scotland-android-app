@@ -13,13 +13,13 @@
 
     <fragment
         android:id="@+id/navigation_routes"
-        android:name="gcu.mpd.mtq2020.ui.dashboard.DashboardFragment"
+        android:name="gcu.mpd.mtq2020.ui.search.SearchFragment"
         android:label="@string/title_routes"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_search" />
 
     <fragment
         android:id="@+id/navigation_search"
-        android:name="gcu.mpd.mtq2020.ui.notifications.NotificationsFragment"
+        android:name="gcu.mpd.mtq2020.ui.routes.RoutesFragment"
         android:label="@string/title_search"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_routes" />
 </navigation>

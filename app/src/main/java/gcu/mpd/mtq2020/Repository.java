@@ -14,20 +14,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class Repository extends AsyncTask<String, Void, String> {
+public class Repository {
     private static final String TAG = "gcu.mpd.mtq2020.Repository";
 
     private static Repository instance;
     private MutableLiveData<ArrayList<Event>> events = new MutableLiveData<>();
-    private URL url;
-    private TrafficEventParser trafficEventParser;
-    private EventType type;
+    private MutableLiveData<ArrayList<Event>> onGoingRoadworks = new MutableLiveData<>();
+    private MutableLiveData<ArrayList<Event>> plannedRoadworks = new MutableLiveData<>();
 
-    public Repository() {
-        setURL(TrafficURL.ongoingRoadworks);
-        this.trafficEventParser = new TrafficEventParser();
-        this.type = EventType.ONGOING_ROADWORK;
-    }
 
     public static Repository getInstance() {
         if(instance == null) {
@@ -41,78 +35,98 @@ public class Repository extends AsyncTask<String, Void, String> {
     }
 
     public LiveData<ArrayList<Event>> getEvents() {
+        GetData data = new GetData(TrafficURL.currentIncidents, EventType.CURRENT_INCIDENT);
+        data.execute();
         return events;
     }
 
-
-    @Override
-    protected String doInBackground(String... strings) {
-        String rssFeed = downloadXML();
-
-        if (rssFeed == null) {
-            Log.e(TAG, "doInBackground: Error downloading");
-        }
-        return rssFeed;
+    public LiveData<ArrayList<Event>> getOnGoingRoadworks() {
+        GetData data = new GetData(TrafficURL.ongoingRoadworks, EventType.ONGOING_ROADWORK);
+        data.execute();
+        return onGoingRoadworks;
     }
 
-    @Override
-    protected void onPostExecute(String rawFeed) {
-        super.onPostExecute(rawFeed);
-        boolean result = trafficEventParser.parse(rawFeed, type);
-
-        if (result) {
-            events.postValue(trafficEventParser.getEvents());
-        }
+    public LiveData<ArrayList<Event>> getPlannedRoadworks() {
+        GetData data = new GetData(TrafficURL.plannedRoadworks, EventType.PLANNED_ROADWORK);
+        data.execute();
+        return plannedRoadworks;
     }
 
-    public void getLiveData() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String rssFeed = Repository.this.downloadXML();
-                    trafficEventParser.parse(rssFeed, type);
-                } catch (Exception e) {
-                    Log.e(TAG, "run: ", e);
-                }
+    private class GetData extends AsyncTask<String, Void, String> {
+        private static final String TAG = "GetData";
+        private URL url;
+        private TrafficEventParser trafficEventParser;
+        private EventType type;
 
-                events.postValue(trafficEventParser.getEvents());
+        public GetData(String trafficURL, EventType type) {
+            setURL(trafficURL);
+            this.trafficEventParser = new TrafficEventParser();
+            this.type = type;
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String rssFeed = downloadXML();
+
+            if (rssFeed == null) {
+                Log.e(TAG, "doInBackground: Error downloading");
             }
-        }).start();
-    }
+            return rssFeed;
+        }
 
-    private String downloadXML() {
-        StringBuilder xmlResult = new StringBuilder();
+        @Override
+        protected void onPostExecute(String rawFeed) {
+            super.onPostExecute(rawFeed);
+            boolean result = trafficEventParser.parse(rawFeed, type);
 
-        try {
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-            int charsRead;
-            char[] inputBuffer = new char[500];
-            while (true) {
-                charsRead = reader.read(inputBuffer);
-                if (charsRead < 0) {
-                    break;
-                }
-                if (charsRead > 0) {
-                    xmlResult.append(String.copyValueOf(inputBuffer, 0, charsRead));
+            if (result) {
+                switch (type) {
+                    case CURRENT_INCIDENT:
+                        events.postValue(trafficEventParser.getEvents());
+                        break;
+                    case ONGOING_ROADWORK:
+                        onGoingRoadworks.postValue(trafficEventParser.getEvents());
+                        break;
+                    case PLANNED_ROADWORK:
+                        plannedRoadworks.postValue(trafficEventParser.getEvents());
+                        break;
                 }
             }
-            reader.close();
-
-            return xmlResult.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        return null;
-    }
 
-    private void setURL(String feedURL) {
-        try {
-            url = new URL(feedURL);
-        } catch (MalformedURLException e) {
-            Log.e(TAG, "setURL: Error creating URL obj", e);
+        private String downloadXML() {
+            StringBuilder xmlResult = new StringBuilder();
+
+            try {
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+                int charsRead;
+                char[] inputBuffer = new char[500];
+                while (true) {
+                    charsRead = reader.read(inputBuffer);
+                    if (charsRead < 0) {
+                        break;
+                    }
+                    if (charsRead > 0) {
+                        xmlResult.append(String.copyValueOf(inputBuffer, 0, charsRead));
+                    }
+                }
+                reader.close();
+
+                return xmlResult.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        private void setURL(String feedURL) {
+            try {
+                url = new URL(feedURL);
+            } catch (MalformedURLException e) {
+                Log.e(TAG, "setURL: Error creating URL obj", e);
+            }
         }
     }
 }

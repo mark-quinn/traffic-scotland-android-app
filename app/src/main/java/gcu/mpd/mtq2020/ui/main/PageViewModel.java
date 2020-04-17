@@ -17,10 +17,12 @@ import gcu.mpd.mtq2020.Repository;
 public class PageViewModel extends AndroidViewModel {
     private Repository repo = Repository.getInstance();
     private LiveData<ArrayList<Event>> events;
+    private LiveData<ArrayList<Event>> onGoingRoadworks;
 
     public PageViewModel(Application application) {
         super(application);
         events = repo.getEvents();
+        onGoingRoadworks = repo.getOnGoingRoadworks();
     }
 
     private MutableLiveData<Integer> mIndex = new MutableLiveData<>();
@@ -42,4 +44,6 @@ public class PageViewModel extends AndroidViewModel {
     public LiveData<ArrayList<Event>> getEvents() {
         return events;
     }
+
+    public LiveData<ArrayList<Event>> getOnGoingRoadworks() { return onGoingRoadworks; }
 }

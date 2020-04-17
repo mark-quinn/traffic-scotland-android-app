@@ -52,8 +52,6 @@ public class PlaceholderFragment extends Fragment {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
         pageViewModel.setIndex(index);
-
-        Repository.getInstance().execute();
     }
 
     @Override
@@ -71,7 +69,7 @@ public class PlaceholderFragment extends Fragment {
             }
         });
 
-        pageViewModel.getEvents().observe(this, new Observer<ArrayList<Event>>() {
+        pageViewModel.getOnGoingRoadworks().observe(this, new Observer<ArrayList<Event>>() {
             @Override
             public void onChanged(ArrayList<Event> events) {
                 FeedAdapter feedAdapter = new FeedAdapter(

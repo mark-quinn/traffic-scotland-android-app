@@ -1,10 +1,10 @@
 package gcu.mpd.mtq2020;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,39 +12,38 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
-import gcu.mpd.mtq2020.ui.home.HomeFragment;
-import gcu.mpd.mtq2020.ui.main.SectionsPagerAdapter;
+public class Repository extends AsyncTask<String, Void, String> {
+    private static final String TAG = "gcu.mpd.mtq2020.Repository";
 
-public class FetchRSSFeed extends AsyncTask<String, Void, String> {
-
-    private static final String TAG = "FetchRSSFeed";
+    private static Repository instance;
+    private MutableLiveData<ArrayList<Event>> events = new MutableLiveData<>();
     private URL url;
     private TrafficEventParser trafficEventParser;
     private EventType type;
-    private AsyncTaskListener listener;
 
-    public FetchRSSFeed(Context context, String feedURL, EventType type) {
-        setURL(feedURL);
+    public Repository() {
+        setURL(TrafficURL.ongoingRoadworks);
         this.trafficEventParser = new TrafficEventParser();
-        this.type = type;
-        listener = (AsyncTaskListener) context;
+        this.type = EventType.ONGOING_ROADWORK;
     }
 
-    public FetchRSSFeed(Fragment fragment, String feedURL, EventType type) {
-        setURL(feedURL);
-        this.trafficEventParser = new TrafficEventParser();
-        this.type = type;
-        listener = (AsyncTaskListener) fragment;
-    }
-
-    private void setURL(String feedURL) {
-        try {
-            url = new URL(feedURL);
-        } catch (MalformedURLException e) {
-            Log.e(TAG, "setURL: Error creating URL obj", e);
+    public static Repository getInstance() {
+        if(instance == null) {
+            synchronized (Repository.class) {
+                if(instance == null) {
+                    instance = new Repository();
+                }
+            }
         }
+        return instance;
     }
+
+    public LiveData<ArrayList<Event>> getEvents() {
+        return events;
+    }
+
 
     @Override
     protected String doInBackground(String... strings) {
@@ -62,8 +61,24 @@ public class FetchRSSFeed extends AsyncTask<String, Void, String> {
         boolean result = trafficEventParser.parse(rawFeed, type);
 
         if (result) {
-            listener.newEvents(trafficEventParser.getEvents());
+            events.postValue(trafficEventParser.getEvents());
         }
+    }
+
+    public void getLiveData() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String rssFeed = Repository.this.downloadXML();
+                    trafficEventParser.parse(rssFeed, type);
+                } catch (Exception e) {
+                    Log.e(TAG, "run: ", e);
+                }
+
+                events.postValue(trafficEventParser.getEvents());
+            }
+        }).start();
     }
 
     private String downloadXML() {
@@ -71,8 +86,6 @@ public class FetchRSSFeed extends AsyncTask<String, Void, String> {
 
         try {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            int response = connection.getResponseCode();
-            Log.d(TAG, "downloadXML: Response code " + response);
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
             int charsRead;
@@ -93,5 +106,13 @@ public class FetchRSSFeed extends AsyncTask<String, Void, String> {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private void setURL(String feedURL) {
+        try {
+            url = new URL(feedURL);
+        } catch (MalformedURLException e) {
+            Log.e(TAG, "setURL: Error creating URL obj", e);
+        }
     }
 }

@@ -34,7 +34,7 @@ public class Repository {
         return instance;
     }
 
-    public LiveData<ArrayList<Event>> getEvents() {
+    public LiveData<ArrayList<Event>> getCurrentEvents() {
         GetData data = new GetData(TrafficURL.currentIncidents, EventType.CURRENT_INCIDENT);
         data.execute();
         return events;

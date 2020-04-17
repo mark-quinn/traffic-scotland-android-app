@@ -35,6 +35,7 @@
     <string name="title_routes">Routes</string>
     <string name="title_search">Notifications</string>
     <string name="title_activity_results">Results</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_1">Current Incidents</string>
+    <string name="tab_text_2">On-going Roadworks</string>
+    <string name="tab_text_3">Planned Roadworks</string>
 </resources>

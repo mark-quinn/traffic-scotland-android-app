@@ -18,20 +18,26 @@ public class PageViewModel extends AndroidViewModel {
     private Repository repo = Repository.getInstance();
     private LiveData<ArrayList<Event>> events;
     private LiveData<ArrayList<Event>> onGoingRoadworks;
+    private LiveData<ArrayList<Event>> plannedRoadworks;
+    private MutableLiveData<Integer> mIndex = new MutableLiveData<>();
 
     public PageViewModel(Application application) {
         super(application);
         events = repo.getEvents();
         onGoingRoadworks = repo.getOnGoingRoadworks();
+        plannedRoadworks = repo.getPlannedRoadworks();
     }
 
-    private MutableLiveData<Integer> mIndex = new MutableLiveData<>();
     private LiveData<String> mText = Transformations.map(mIndex, new Function<Integer, String>() {
         @Override
         public String apply(Integer input) {
             return "Hello world from section: " + input;
         }
     });
+
+    public int getIndex() {
+        return mIndex.getValue();
+    }
 
     public void setIndex(int index) {
         mIndex.setValue(index);
@@ -46,4 +52,7 @@ public class PageViewModel extends AndroidViewModel {
     }
 
     public LiveData<ArrayList<Event>> getOnGoingRoadworks() { return onGoingRoadworks; }
+
+    public LiveData<ArrayList<Event>> getPlannedRoadworks() { return plannedRoadworks; }
+
 }

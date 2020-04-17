@@ -69,14 +69,29 @@ public class PlaceholderFragment extends Fragment {
             }
         });
 
-        pageViewModel.getOnGoingRoadworks().observe(this, new Observer<ArrayList<Event>>() {
-            @Override
-            public void onChanged(ArrayList<Event> events) {
-                FeedAdapter feedAdapter = new FeedAdapter(
-                        Objects.requireNonNull(getContext()), R.layout.traffic_event, events);
-                listEvents.setAdapter(feedAdapter);
-            }
-        });
+
+        switch (pageViewModel.getIndex()) {
+            case 1:
+                pageViewModel.getEvents().observe(this, new Observer<ArrayList<Event>>() {
+                    @Override
+                    public void onChanged(ArrayList<Event> events) {
+                        FeedAdapter feedAdapter = new FeedAdapter(
+                                Objects.requireNonNull(getContext()), R.layout.traffic_event, events);
+                        listEvents.setAdapter(feedAdapter);
+                    }
+                });
+                break;
+            case 2:
+                pageViewModel.getOnGoingRoadworks().observe(this, new Observer<ArrayList<Event>>() {
+                    @Override
+                    public void onChanged(ArrayList<Event> events) {
+                        FeedAdapter feedAdapter = new FeedAdapter(
+                                Objects.requireNonNull(getContext()), R.layout.traffic_event, events);
+                        listEvents.setAdapter(feedAdapter);
+                    }
+                });
+        }
+
         return root;
     }
 }

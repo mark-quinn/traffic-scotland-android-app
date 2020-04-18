@@ -48,6 +48,7 @@ public class TrafficEventParser {
                         if(inEntry) {
                             if("item".equalsIgnoreCase(tagName)) {
                                 currentRecord.setEventType(type);
+                                currentRecord.parseAdditionalFeatures();
                                 events.add(currentRecord);
                                 inEntry = false;
                             } else if("title".equalsIgnoreCase(tagName)) {

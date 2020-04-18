@@ -18,6 +18,8 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.gms.maps.SupportMapFragment;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -46,6 +48,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
+        JodaTimeAndroid.init(getContext());
         return root;
     }
 

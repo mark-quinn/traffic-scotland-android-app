@@ -2,6 +2,8 @@ package gcu.mpd.mtq2020;
 
 import android.util.Log;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 
@@ -24,7 +26,13 @@ public class Event implements Serializable {
     private EventType type;
     private Date startDate = null;
     private Date endDate = null;
-    private EventLength eventLength;
+    private EventLength eventLength = null;
+    private String delayInformation = null;
+    private String locationInfo = null;
+    private String laneClosures = null;
+    private String workDetails = null;
+    private String trafficManagement = null;
+    private String diversionInfo = null;
 
     public String getTitle() {
         return title;
@@ -39,11 +47,7 @@ public class Event implements Serializable {
     }
 
     public void setDescription(String description) {
-        if (type == EventType.CURRENT_INCIDENT) {
-            this.description = description;
-        } else {
-            this.description = parseDescription(description);
-        }
+        this.description = description;
     }
 
     public String getPublishedDate() {
@@ -89,7 +93,7 @@ public class Event implements Serializable {
         this.type = type;
     }
 
-    public EventLength getEventLength () {
+    public EventLength getEventLength() {
         return eventLength;
     }
 
@@ -98,7 +102,7 @@ public class Event implements Serializable {
         Duration period = interval.toDuration();
         long days = period.getStandardDays();
 
-        if(days <= 7) {
+        if (days <= 7) {
             eventLength = EventLength.SHORT;
         } else if (days <= 31) {
             eventLength = EventLength.INTERMEDIATE;
@@ -107,8 +111,8 @@ public class Event implements Serializable {
         }
     }
 
-    private String parseDescription(String description) {
-        String[] tokens = description.split("<br />");
+    public void parseAdditionalFeatures() {
+        String[] tokens = this.description.split("<br />");
 
         for (String token : tokens) {
             System.out.println(token);
@@ -116,7 +120,7 @@ public class Event implements Serializable {
             if (token.contains("Start Date")) {
                 String date = token.split("Start Date: ")[1];
                 try {
-                    startDate = new SimpleDateFormat("E, dd MMM yyyy - HH:mm", Locale.UK)
+                    this.startDate = new SimpleDateFormat("E, dd MMM yyyy - HH:mm", Locale.UK)
                             .parse(date);
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -125,7 +129,7 @@ public class Event implements Serializable {
             } else if (token.contains("End Date")) {
                 String date = token.split("End Date: ")[1];
                 try {
-                    endDate = new SimpleDateFormat("E, dd MMM yyyy - HH:mm", Locale.UK)
+                    this.endDate = new SimpleDateFormat("E, dd MMM yyyy - HH:mm", Locale.UK)
                             .parse(date);
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -134,12 +138,65 @@ public class Event implements Serializable {
             }
         }
 
-        if (startDate != null && endDate != null) {
+        if (this.startDate != null && this.endDate != null) {
             setEventLength();
         }
 
         // TODO: format description further
-        String desc = tokens[tokens.length-1];
-        return tokens[tokens.length-1];
+        String additionalInfo = tokens[tokens.length - 1];
+        extractAdditionalFields(additionalInfo);
+    }
+
+    private void extractAdditionalFields(String info) {
+        String[] tokens = info.split("\n");
+
+        switch (this.type) {
+            case ONGOING_ROADWORK:
+                parseOnGoingRoadwork(tokens);
+            case PLANNED_ROADWORK:
+                parsePlannedRoadwork(tokens);
+        }
+    }
+
+    private void parseOnGoingRoadwork(String[] details) {
+        for (int i = 0; i < details.length; i++) {
+            if (details[i].isEmpty()) {
+                break;
+            }
+
+            String currentField = details[i];
+            this.delayInformation = currentField.split(":")[1];
+        }
+    }
+
+    private void parsePlannedRoadwork(String[] details) {
+        for (int i = 0; i < details.length; i++) {
+            if (details[i].isEmpty()) {
+                continue;
+            }
+            String currentField = details[i];
+
+            switch (currentField) {
+                case "Delay Information:":
+                    this.delayInformation = details[i + 1];
+                    break;
+                case "Location:":
+                    this.locationInfo = details[i + 1];
+                    break;
+                case "Lane Closures:":
+                    this.laneClosures = details[i + 1];
+                    break;
+                case "Works:":
+                    this.workDetails = details[i + 1];
+                    break;
+                case "Traffic Management:":
+                    this.trafficManagement = details[i + 1];
+                    break;
+                case "Diversion Information:":
+                    this.diversionInfo = details[i + 1];
+                    break;
+            }
+        }
     }
 }
+

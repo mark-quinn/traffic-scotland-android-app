@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 
 import java.util.List;
 
@@ -50,16 +52,17 @@ public class FeedAdapter extends ArrayAdapter {
         final Event currentApp = events.get(position);
 
         viewHolder.tvTitle.setText(currentApp.getTitle());
-        viewHolder.tvDescription.setText(currentApp.getDescription());
         viewHolder.tvPubDate.setText(currentApp.getPublishedDate());
-        viewHolder.tvPoint.setText(currentApp.getLocation());
 
         if (currentApp.getEventLength() == EventLength.SHORT) {
-            viewHolder.tvTitle.setTextColor(Color.GREEN);
+            viewHolder.tvLengthMessage.setText("This event should last less than a week.");
+            viewHolder.tvLengthMessage.setTextColor(Color.GREEN);
         } else if (currentApp.getEventLength() == EventLength.INTERMEDIATE) {
-            viewHolder.tvTitle.setTextColor(Color.YELLOW);
+            viewHolder.tvLengthMessage.setText("This event should last less than a month.");
+            viewHolder.tvLengthMessage.setTextColor(ContextCompat.getColor(context, R.color.amber));
         } else {
-            viewHolder.tvTitle.setTextColor(Color.RED);
+            viewHolder.tvLengthMessage.setText("This event could last more than several months.");
+            viewHolder.tvLengthMessage.setTextColor(Color.RED);
         }
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,15 +78,13 @@ public class FeedAdapter extends ArrayAdapter {
 
     private class ViewHolder {
         final TextView tvTitle;
-        final TextView tvDescription;
         final TextView tvPubDate;
-        final TextView tvPoint;
+        final TextView tvLengthMessage;
 
         ViewHolder(View v) {
             this.tvTitle = v.findViewById(R.id.tvTitle);
-            this.tvDescription = v.findViewById(R.id.tvDescription);
             this.tvPubDate = v.findViewById(R.id.tvPubDate);
-            this.tvPoint = v.findViewById(R.id.tvPoint);
+            this.tvLengthMessage = v.findViewById(R.id.lengthMessage);
         }
     }
 }

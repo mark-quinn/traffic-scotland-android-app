@@ -1,24 +1,22 @@
 package gcu.mpd.mtq2020;
 
+import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-
-import java.util.ArrayList;
+import java.util.Date;
 
 import gcu.mpd.mtq2020.ui.main.SectionsPagerAdapter;
 
 public class Results extends AppCompatActivity {
     ViewPager viewPager;
+    public Date date;
+    public RoadType roadType;
+    public String road;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

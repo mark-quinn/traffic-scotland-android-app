@@ -24,6 +24,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import gcu.mpd.mtq2020.R;
+import gcu.mpd.mtq2020.Results;
 import gcu.mpd.mtq2020.RoadType;
 import gcu.mpd.mtq2020.SearchResults;
 
@@ -104,7 +105,7 @@ public class SearchFragment extends Fragment {
                 String text = (String) checkedButton.getText();
                 RoadType roadType = getRoadType(text);
 
-                Intent intent = new Intent(root.getContext(), SearchResults.class);
+                Intent intent = new Intent(root.getContext(), Results.class);
                 intent.putExtra("DATE", date);
                 intent.putExtra("ROAD_TYPE", roadType);
                 intent.putExtra("ROAD", selectedRoad);

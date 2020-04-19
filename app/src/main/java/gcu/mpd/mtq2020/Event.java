@@ -2,8 +2,6 @@ package gcu.mpd.mtq2020;
 
 import android.util.Log;
 
-import net.danlew.android.joda.JodaTimeAndroid;
-
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 

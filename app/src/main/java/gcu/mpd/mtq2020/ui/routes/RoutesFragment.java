@@ -54,6 +54,7 @@ public class RoutesFragment extends Fragment implements OnMapReadyCallback, Task
     private AutocompleteSupportFragment autocompleteFragment;
     private AutocompleteSupportFragment autocompleteFragment2;
     private PolylineOptions polylineOptions;
+    private SupportMapFragment mapFragment;
 
     List<MarkerOptions> markerOptionsList = new ArrayList<>();
 
@@ -113,6 +114,8 @@ public class RoutesFragment extends Fragment implements OnMapReadyCallback, Task
 
         showResult = root.findViewById(R.id.btnShowResults);
         showResult.setOnClickListener(onClickListener);
+        mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getView().setVisibility(View.INVISIBLE);
         return root;
     }
 
@@ -188,10 +191,8 @@ public class RoutesFragment extends Fragment implements OnMapReadyCallback, Task
         markerOptionsList.add(place1);
         markerOptionsList.add(place2);
 
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getView().setVisibility(View.VISIBLE);
         mapFragment.getMapAsync(this);
-
 
 //        LatLng onPath = new LatLng(55.873202, -3.655323);
 //        final boolean locationOnPath = PolyUtil.isLocationOnPath(onPath, currentPolyline.getPoints(), true, 10);

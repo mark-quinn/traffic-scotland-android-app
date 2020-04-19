@@ -109,6 +109,14 @@ public class Event implements Serializable {
         }
     }
 
+    public String getTrafficManagement() {
+        return trafficManagement;
+    }
+
+    public String getWorkDetails() {
+        return workDetails;
+    }
+
     public void parseAdditionalFeatures() {
         String[] tokens = this.description.split("<br />");
 
@@ -151,8 +159,10 @@ public class Event implements Serializable {
         switch (this.type) {
             case ONGOING_ROADWORK:
                 parseOnGoingRoadwork(tokens);
+                break;
             case PLANNED_ROADWORK:
                 parsePlannedRoadwork(tokens);
+                break;
         }
     }
 

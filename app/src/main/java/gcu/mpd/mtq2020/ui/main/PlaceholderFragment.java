@@ -75,6 +75,7 @@ public class PlaceholderFragment extends Fragment {
                         listEvents.setAdapter(feedAdapter);
                     }
                 });
+                break;
             case 3:
                 pageViewModel.getPlannedRoadworks().observe(getViewLifecycleOwner(), new Observer<ArrayList<Event>>() {
                     @Override
@@ -84,6 +85,7 @@ public class PlaceholderFragment extends Fragment {
                         listEvents.setAdapter(feedAdapter);
                     }
                 });
+                break;
         }
         return root;
     }

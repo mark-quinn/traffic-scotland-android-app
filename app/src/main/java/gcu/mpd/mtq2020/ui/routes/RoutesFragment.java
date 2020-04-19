@@ -51,6 +51,9 @@ public class RoutesFragment extends Fragment implements OnMapReadyCallback, Task
     private Polyline currentPolyline;
     private Button showResult;
     private MarkerOptions place1, place2;
+    private AutocompleteSupportFragment autocompleteFragment;
+    private AutocompleteSupportFragment autocompleteFragment2;
+    private PolylineOptions polylineOptions;
 
     List<MarkerOptions> markerOptionsList = new ArrayList<>();
 
@@ -67,7 +70,7 @@ public class RoutesFragment extends Fragment implements OnMapReadyCallback, Task
                 ViewModelProviders.of(this).get(RoutesViewModel.class);
         View root = inflater.inflate(R.layout.fragment_routes, container, false);
 
-        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+        autocompleteFragment = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment_from);
 
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
@@ -88,7 +91,7 @@ public class RoutesFragment extends Fragment implements OnMapReadyCallback, Task
         });
 
 
-        AutocompleteSupportFragment autocompleteFragment2 = (AutocompleteSupportFragment)
+        autocompleteFragment2 = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment_to);
 
         autocompleteFragment2.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
@@ -110,20 +113,6 @@ public class RoutesFragment extends Fragment implements OnMapReadyCallback, Task
 
         showResult = root.findViewById(R.id.btnShowResults);
         showResult.setOnClickListener(onClickListener);
-
-
-        start = new LatLng(55.8642, -4.2518);
-        destination = new LatLng(55.9533, -3.1883);
-
-        place1 = new MarkerOptions().position(start);
-        place2 = new MarkerOptions().position(destination);
-
-        markerOptionsList.add(place1);
-        markerOptionsList.add(place2);
-
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
         return root;
     }
 
@@ -133,8 +122,13 @@ public class RoutesFragment extends Fragment implements OnMapReadyCallback, Task
                 @Override
                 public void onClick(View v) {
                     //TODO: check that start and destination values are not null
-                    new FetchURL(RoutesFragment.this)
-                            .execute(getUrl(start, destination, "driving"), "driving");
+
+                    if (start != null && destination != null) {
+                        new FetchURL(RoutesFragment.this)
+                                .execute(getUrl(start, destination, "driving"), "driving");
+                    } else {
+                        //TODO: display message need both values
+                    }
                 }
             };
 
@@ -159,6 +153,7 @@ public class RoutesFragment extends Fragment implements OnMapReadyCallback, Task
 
         mMap.addMarker(place1);
         mMap.addMarker(place2);
+        currentPolyline = mMap.addPolyline((PolylineOptions) polylineOptions);
         showAllMarkers();
     }
 
@@ -185,13 +180,25 @@ public class RoutesFragment extends Fragment implements OnMapReadyCallback, Task
         if (currentPolyline != null)
             currentPolyline.remove();
 
-        currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
-        LatLng onPath = new LatLng(55.873202, -3.655323);
-        final boolean locationOnPath = PolyUtil.isLocationOnPath(onPath, currentPolyline.getPoints(), true, 10);
+        polylineOptions = (PolylineOptions) values[0];
 
-        if (locationOnPath) {
-            MarkerOptions event = new MarkerOptions().position(onPath);
-            mMap.addMarker(event);
-        }
+        place1 = new MarkerOptions().position(start);
+        place2 = new MarkerOptions().position(destination);
+
+        markerOptionsList.add(place1);
+        markerOptionsList.add(place2);
+
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+
+//        LatLng onPath = new LatLng(55.873202, -3.655323);
+//        final boolean locationOnPath = PolyUtil.isLocationOnPath(onPath, currentPolyline.getPoints(), true, 10);
+//
+//        if (locationOnPath) {
+//            MarkerOptions event = new MarkerOptions().position(onPath);
+//            mMap.addMarker(event);
+//        }
     }
 }

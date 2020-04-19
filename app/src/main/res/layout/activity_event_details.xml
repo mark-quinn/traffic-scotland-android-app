@@ -85,6 +85,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
+        android:textSize="14sp"
         app:layout_constraintStart_toStartOf="@+id/textView7"
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
@@ -111,6 +112,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="Location"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="@+id/imageView" />
 
@@ -119,6 +122,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Description"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/eventLocation"
         app:layout_constraintTop_toTopOf="@+id/imageView2" />
 
@@ -127,6 +132,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="GPS"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/eventDescription"
         app:layout_constraintTop_toTopOf="@+id/imageView3" />
 
@@ -135,6 +142,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Traffic Management"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/eventGPS"
         app:layout_constraintTop_toTopOf="@+id/imageView4" />
 
@@ -143,6 +152,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Works"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/trafficManagement"
         app:layout_constraintTop_toTopOf="@+id/imageView6" />
 

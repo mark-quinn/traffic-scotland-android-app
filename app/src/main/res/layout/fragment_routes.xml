@@ -59,5 +59,23 @@
         app:layout_constraintStart_toStartOf="@+id/cardView1"
         app:layout_constraintTop_toBottomOf="@+id/cardView1" />
 
+    <Button
+        android:id="@+id/btnShowResults"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Button"
+        app:layout_constraintStart_toStartOf="@+id/cardView2"
+        app:layout_constraintTop_toBottomOf="@+id/cardView2" />
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="352dp"
+        android:layout_height="488dp"
+        app:cameraZoom="7"
+        app:layout_constraintStart_toStartOf="@+id/btnShowResults"
+        app:layout_constraintTop_toBottomOf="@+id/btnShowResults" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

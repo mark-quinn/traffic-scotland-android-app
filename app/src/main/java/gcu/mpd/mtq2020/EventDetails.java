@@ -38,9 +38,9 @@ public class EventDetails extends AppCompatActivity {
         tvTrafficManagement.setText(event.getTrafficManagement());
         tvWorksInfo.setText(event.getWorkDetails());
 
-//        mMap = new MapsActivity(event);
-//        SupportMapFragment mapFragment =
-//                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-//        mapFragment.getMapAsync(mMap);
+        mMap = new MapsActivity(event);
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(mMap);
     }
 }

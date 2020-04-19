@@ -36,6 +36,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
     private HomeViewModel homeViewModel;
     private Spinner spinner;
     private MapsActivity mMap;
+    private TextView tvEventTotal;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -48,6 +49,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
+        tvEventTotal = root.findViewById(R.id.totalEvents);
         JodaTimeAndroid.init(getContext());
         return root;
     }
@@ -77,6 +79,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
 
     @Override
     public void newEvents(ArrayList<Event> events) {
+        tvEventTotal.setText("Number of events: " + events.size());
         mMap = new MapsActivity(events);
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);

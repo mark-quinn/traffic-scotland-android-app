@@ -28,6 +28,7 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.maps.android.PolyUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -185,5 +186,12 @@ public class RoutesFragment extends Fragment implements OnMapReadyCallback, Task
             currentPolyline.remove();
 
         currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
+        LatLng onPath = new LatLng(55.873202, -3.655323);
+        final boolean locationOnPath = PolyUtil.isLocationOnPath(onPath, currentPolyline.getPoints(), true, 10);
+
+        if (locationOnPath) {
+            MarkerOptions event = new MarkerOptions().position(onPath);
+            mMap.addMarker(event);
+        }
     }
 }

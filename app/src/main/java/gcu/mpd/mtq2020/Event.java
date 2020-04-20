@@ -77,6 +77,11 @@ public class Event implements Serializable {
         return df.format(startDate);
     }
 
+    public String getSimpleDateRange() {
+        DateFormat df = new SimpleDateFormat("dd/MM/yyy");
+        return df.format(startDate) + " to " + df.format(endDate);
+    }
+
     public Date getEndDate() {
         return endDate;
     }
@@ -146,6 +151,7 @@ public class Event implements Serializable {
 
         if (this.startDate != null && this.endDate != null) {
             setEventLength();
+            description = getSimpleDateRange();
         }
 
         // TODO: format description further

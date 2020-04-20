@@ -33,7 +33,7 @@ public class EventDetails extends AppCompatActivity {
 
         tvTitle.setText(event.getTitle());
         tvLocation.setText(event.getTitle());
-//        tvEventDesc.setText(event.getDescription());
+        tvEventDesc.setText(event.getDescription());
         tvEventGPS.setText(event.getLocation());
         tvTrafficManagement.setText(event.getTrafficManagement());
         tvWorksInfo.setText(event.getWorkDetails());

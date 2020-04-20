@@ -60,6 +60,7 @@ public class PlaceholderFragment extends Fragment {
                 pageViewModel.getCurrentEvents().observe(getViewLifecycleOwner(), new Observer<ArrayList<Event>>() {
                     @Override
                     public void onChanged(ArrayList<Event> events) {
+                        //TODO: filter events
                         FeedAdapter feedAdapter = new FeedAdapter(
                                 Objects.requireNonNull(getContext()), R.layout.traffic_event, events);
                         listEvents.setAdapter(feedAdapter);

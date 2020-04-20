@@ -1,5 +1,9 @@
 package gcu.mpd.mtq2020.ui.routes;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,15 +13,16 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -38,6 +43,7 @@ import java.util.Objects;
 
 import gcu.mpd.mtq2020.DirectionHelpers.FetchURL;
 import gcu.mpd.mtq2020.DirectionHelpers.TaskLoadedCallback;
+import gcu.mpd.mtq2020.Event;
 import gcu.mpd.mtq2020.R;
 
 public class RoutesFragment extends Fragment implements OnMapReadyCallback, TaskLoadedCallback {
@@ -55,6 +61,7 @@ public class RoutesFragment extends Fragment implements OnMapReadyCallback, Task
     private AutocompleteSupportFragment autocompleteFragment2;
     private PolylineOptions polylineOptions;
     private SupportMapFragment mapFragment;
+    private ArrayList<Event> allEvents;
 
     List<MarkerOptions> markerOptionsList = new ArrayList<>();
 
@@ -65,10 +72,18 @@ public class RoutesFragment extends Fragment implements OnMapReadyCallback, Task
             Places.initialize(getContext(), getString(R.string.google_maps_key), Locale.UK);
         }
 
+
         placesClient = Places.createClient(Objects.requireNonNull(getContext()));
 
         routesViewModel =
                 ViewModelProviders.of(this).get(RoutesViewModel.class);
+
+        routesViewModel.getEvents().observe(getViewLifecycleOwner(), new Observer<ArrayList<Event>>() {
+            @Override
+            public void onChanged(ArrayList<Event> events) {
+                allEvents = events;
+            }
+        });
         View root = inflater.inflate(R.layout.fragment_routes, container, false);
 
         autocompleteFragment = (AutocompleteSupportFragment)
@@ -119,6 +134,20 @@ public class RoutesFragment extends Fragment implements OnMapReadyCallback, Task
         return root;
     }
 
+    private void filterEvents() {
+        for (Event event : allEvents) {
+            LatLng eventLocation = new LatLng(event.getLatitude(), event.getLongitude());
+            final boolean locationOnPath = PolyUtil.isLocationOnPath(eventLocation, currentPolyline.getPoints(), true, 10);
+
+            if (locationOnPath) {
+                MarkerOptions eventOnPath = new MarkerOptions()
+                        .position(eventLocation)
+                        .title(event.getTitle())
+                        .snippet(event.getDescription());
+                mMap.addMarker(eventOnPath);
+            }
+        }
+    }
 
     private Button.OnClickListener onClickListener =
             new View.OnClickListener() {
@@ -140,7 +169,7 @@ public class RoutesFragment extends Fragment implements OnMapReadyCallback, Task
 
         String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
 
-        String transport_type = "travelmode=" + transportType;
+//        String transport_type = "travelmode=" + transportType;
 
         String parameter = str_start + "&" + str_dest;
 
@@ -174,6 +203,7 @@ public class RoutesFragment extends Fragment implements OnMapReadyCallback, Task
         int padding = (int) (width * 0.30);
 
         CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
+        filterEvents();
         mMap.animateCamera(cu);
     }
 
@@ -193,13 +223,5 @@ public class RoutesFragment extends Fragment implements OnMapReadyCallback, Task
 
         mapFragment.getView().setVisibility(View.VISIBLE);
         mapFragment.getMapAsync(this);
-
-//        LatLng onPath = new LatLng(55.873202, -3.655323);
-//        final boolean locationOnPath = PolyUtil.isLocationOnPath(onPath, currentPolyline.getPoints(), true, 10);
-//
-//        if (locationOnPath) {
-//            MarkerOptions event = new MarkerOptions().position(onPath);
-//            mMap.addMarker(event);
-//        }
     }
 }

@@ -4,7 +4,9 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,6 +34,34 @@ public class Repository {
             }
         }
         return instance;
+    }
+
+    public LiveData<ArrayList<Event>> getAllEvents() {
+        getCurrentEvents();
+        getOnGoingRoadworks();
+        getPlannedRoadworks();
+
+        final MediatorLiveData liveData = new MediatorLiveData();
+        liveData.addSource(events, new Observer() {
+            @Override
+            public void onChanged(Object value) {
+                liveData.setValue(value);
+            }
+        });
+        liveData.addSource(onGoingRoadworks, new Observer() {
+            @Override
+            public void onChanged(Object value) {
+                liveData.setValue(value);
+            }
+        });
+        liveData.addSource(plannedRoadworks, new Observer() {
+            @Override
+            public void onChanged(Object value) {
+                liveData.setValue(value);
+            }
+        });
+
+        return liveData;
     }
 
     public LiveData<ArrayList<Event>> getCurrentEvents() {

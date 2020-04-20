@@ -1,7 +1,5 @@
 package gcu.mpd.mtq2020;
 
-import android.util.Log;
-
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 
@@ -12,7 +10,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-
+/**
+ * @author Mark Quinn S1510840
+ */
 public class Event implements Serializable {
     private static final String TAG = "Event";
 

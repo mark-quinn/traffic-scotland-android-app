@@ -1,6 +1,5 @@
 package gcu.mpd.mtq2020.DirectionHelpers;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -13,25 +12,24 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/**
+ * @author Mark Quinn S1510840
+ */
 public class FetchURL extends AsyncTask<String, Void, String> {
-    Fragment mContext;
-    String directionMode = "driving";
+    private static final String TAG = "FetchURL";
+    private Fragment fragment;
 
-    public FetchURL(Fragment mContext) {
-        this.mContext = mContext;
+    public FetchURL(Fragment fragment) {
+        this.fragment = fragment;
     }
 
     @Override
     protected String doInBackground(String... strings) {
-        // For storing data from web service
         String data = "";
-        directionMode = strings[1];
         try {
-            // Fetching the data from web service
             data = downloadUrl(strings[0]);
-            Log.d("mylog", "Background task data " + data.toString());
         } catch (Exception e) {
-            Log.d("Background Task", e.toString());
+            Log.e(TAG, "doInBackground: ", e);
         }
         return data;
     }
@@ -39,8 +37,7 @@ public class FetchURL extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        PointsParser parserTask = new PointsParser(mContext, directionMode);
-        // Invokes the thread for parsing the JSON data
+        PointsParser parserTask = new PointsParser(fragment);
         parserTask.execute(s);
     }
 
@@ -50,11 +47,8 @@ public class FetchURL extends AsyncTask<String, Void, String> {
         HttpURLConnection urlConnection = null;
         try {
             URL url = new URL(strUrl);
-            // Creating an http connection to communicate with url
             urlConnection = (HttpURLConnection) url.openConnection();
-            // Connecting to url
             urlConnection.connect();
-            // Reading data from url
             iStream = urlConnection.getInputStream();
             BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
             StringBuffer sb = new StringBuffer();
@@ -63,10 +57,9 @@ public class FetchURL extends AsyncTask<String, Void, String> {
                 sb.append(line);
             }
             data = sb.toString();
-            Log.d("mylog", "Downloaded URL: " + data.toString());
             br.close();
         } catch (Exception e) {
-            Log.d("mylog", "Exception downloading URL: " + e.toString());
+            Log.e(TAG, "downloadUrl: ", e);
         } finally {
             iStream.close();
             urlConnection.disconnect();

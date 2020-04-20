@@ -16,6 +16,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+/**
+ * @author Mark Quinn S1510840
+ */
 public class Repository {
     private static final String TAG = "gcu.mpd.mtq2020.Repository";
 

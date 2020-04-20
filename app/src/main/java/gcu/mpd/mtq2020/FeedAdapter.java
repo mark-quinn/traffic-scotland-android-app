@@ -12,10 +12,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
 
 import java.util.List;
 
+/**
+ * @author Mark Quinn S1510840
+ */
 public class FeedAdapter extends ArrayAdapter {
     private static final String TAG = "FeedAdapter";
     private final int layoutResource;

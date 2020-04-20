@@ -31,6 +31,9 @@ import gcu.mpd.mtq2020.MapsActivity;
 import gcu.mpd.mtq2020.R;
 import gcu.mpd.mtq2020.TrafficURL;
 
+/**
+ * @author Mark Quinn S1510840
+ */
 public class HomeFragment extends Fragment implements AdapterView.OnItemSelectedListener, AsyncTaskListener {
 
     private HomeViewModel homeViewModel;

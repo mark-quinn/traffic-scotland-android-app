@@ -7,6 +7,9 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.StringReader;
 import java.util.ArrayList;
 
+/**
+ * @author Mark Quinn S1510840
+ */
 public class TrafficEventParser {
     private static final String TAG = "TrafficEventParser";
     private ArrayList<Event> events;

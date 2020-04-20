@@ -26,8 +26,10 @@ import java.util.Date;
 import gcu.mpd.mtq2020.R;
 import gcu.mpd.mtq2020.Results;
 import gcu.mpd.mtq2020.RoadType;
-import gcu.mpd.mtq2020.SearchResults;
 
+/**
+ * @author Mark Quinn S1510840
+ */
 public class SearchFragment extends Fragment {
 
     private SearchViewModel searchViewModel;

@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import gcu.mpd.mtq2020.Event;
 import gcu.mpd.mtq2020.Repository;
 
+/**
+ * @author Mark Quinn S1510840
+ */
 public class RoutesViewModel extends AndroidViewModel {
     private Repository repo = Repository.getInstance();
     private LiveData<ArrayList<Event>> events;

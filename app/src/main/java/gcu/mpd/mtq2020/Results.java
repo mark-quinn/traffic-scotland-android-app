@@ -11,6 +11,9 @@ import java.util.Date;
 
 import gcu.mpd.mtq2020.ui.main.SectionsPagerAdapter;
 
+/**
+ * @author Mark Quinn S1510840
+ */
 public class Results extends AppCompatActivity {
     ViewPager viewPager;
     public Date date;

@@ -8,6 +8,9 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.SupportMapFragment;
 
+/**
+ * @author Mark Quinn S1510840
+ */
 public class EventDetails extends AppCompatActivity {
     private Event event;
     private TextView tvTitle;

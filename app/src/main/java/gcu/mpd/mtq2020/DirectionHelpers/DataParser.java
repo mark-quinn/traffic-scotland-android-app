@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * This class was sourced from jeffry sambells and https://www.youtube.com/watch?v=b5U8WZM45aY
+ */
 public class DataParser {
     public List<List<HashMap<String, String>>> parse(JSONObject jObject) {
 
@@ -55,7 +58,7 @@ public class DataParser {
 
     /**
      * Method to decode polyline points
-     * Courtesy : https://jeffreysambells.com/2010/05/27/decoding-polylines-from-google-maps-direction-api-with-java
+     * Source : https://jeffreysambells.com/2010/05/27/decoding-polylines-from-google-maps-direction-api-with-java
      */
     private List<LatLng> decodePoly(String encoded) {
 

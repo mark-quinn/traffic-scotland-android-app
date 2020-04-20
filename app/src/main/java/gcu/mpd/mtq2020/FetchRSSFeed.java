@@ -13,9 +13,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import gcu.mpd.mtq2020.ui.home.HomeFragment;
-import gcu.mpd.mtq2020.ui.main.SectionsPagerAdapter;
-
+/**
+ * @author Mark Quinn S1510840
+ */
 public class FetchRSSFeed extends AsyncTask<String, Void, String> {
 
     private static final String TAG = "FetchRSSFeed";

@@ -19,7 +19,7 @@ import gcu.mpd.mtq2020.FeedAdapter;
 import gcu.mpd.mtq2020.R;
 
 /**
- * A placeholder fragment containing a simple view.
+ * @author Mark Quinn S1510840
  */
 public class PlaceholderFragment extends Fragment {
 

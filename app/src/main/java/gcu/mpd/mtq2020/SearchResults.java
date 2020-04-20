@@ -15,6 +15,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * @author Mark Quinn S1510840
+ */
 public class SearchResults extends AppCompatActivity implements AsyncTaskListener {
     private static final String TAG = "SearchResults";
     private Date date;

@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import gcu.mpd.mtq2020.R;
 
 /**
+ * @author Mark Quinn S1510840
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
  * one of the sections/tabs/pages.
  */

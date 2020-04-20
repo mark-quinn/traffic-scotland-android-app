@@ -1,9 +1,5 @@
 package gcu.mpd.mtq2020.ui.routes;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +18,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -46,6 +41,9 @@ import gcu.mpd.mtq2020.DirectionHelpers.TaskLoadedCallback;
 import gcu.mpd.mtq2020.Event;
 import gcu.mpd.mtq2020.R;
 
+/**
+ * @author Mark Quinn S1510840
+ */
 public class RoutesFragment extends Fragment implements OnMapReadyCallback, TaskLoadedCallback {
 
     private RoutesViewModel routesViewModel;
